@@ -245,6 +245,16 @@ new directory. Tests cover corruption, unsafe paths, active runs, existing state
 and undownloaded LFS pointers. Named mutants M15 and M16 test byte preservation
 and LFS admission. Original model/data bytes and provenance are preserved.
 
+Remote distribution is confirmed in
+`evaluation/reports/lfs-distribution/release-distribution.json`: the standard
+client acknowledged all twelve LFS objects, and eight files downloaded into a
+fresh GitHub clone matched their sizes and SHA-256 hashes. The four largest
+objects were not independently redownloaded in that clone. A user-approved
+disposable Docker job uploaded the last checkpoint after checking the original
+publisher archive and checkpoint hashes. The one-off workflow was disabled after
+success; its isolated branch and run remain audit evidence. Repeated local DNS
+failures are an operational limitation, not a change to verification policy.
+
 Startup validation is operational evidence, not a chemistry research result.
 `evaluation/reports/startup-acceptance/native-startup.json` records a new isolated
 Linux Python 3.11 venv, pinned CPU dependencies, 40,008 registered public records,
