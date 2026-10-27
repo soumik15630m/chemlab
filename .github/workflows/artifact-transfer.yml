@@ -1,0 +1,81 @@
+name: Publish verified checkpoint object
+
+on:
+  push:
+    branches: [STK/artifact-transfer]
+    paths: [.github/workflows/artifact-transfer.yml]
+
+permissions:
+  contents: write
+
+jobs:
+  transfer:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    container:
+      image: python:3.11-slim@sha256:b7a9e5f6a93d6d4a31f129bbd4bdee69efccb6ded0fb230d78aafaf37af98377
+    steps:
+      - name: Install Git LFS inside disposable container
+        shell: sh
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends git git-lfs ca-certificates
+          git lfs version
+      - name: Check source hashes and publish only the missing object
+        shell: sh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GIT_TERMINAL_PROMPT: '0'
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          import shutil
+          import subprocess
+          import tempfile
+          import urllib.request
+          import zipfile
+          from pathlib import Path
+
+          oid = 'f6013a4cc078614df687c603d252584497b9a3fc480b0d3e57f5c0f199ea92b2'
+          archive_hash = '42a9a52a53317187b39392628d8b560fd95b4311bf29ef886a030127d804b38a'
+          with tempfile.TemporaryDirectory(prefix='chemlab-lfs-') as temp:
+              root = Path(temp)
+              archive = root/'publisher.zip'
+              request = urllib.request.Request('https://ndownloader.figshare.com/files/61360657',
+                                               headers={'User-Agent': 'ChemLab-artifact-transfer/1'})
+              with urllib.request.urlopen(request, timeout=180) as source, archive.open('wb') as output:
+                  shutil.copyfileobj(source, output, length=4*1024*1024)
+              assert archive.stat().st_size == 730592481
+              with archive.open('rb') as source:
+                  assert hashlib.file_digest(source, 'sha256').hexdigest() == archive_hash
+              print('Official publisher archive SHA-256 matches', flush=True)
+              subprocess.run(['git', 'init', str(root/'repo')], check=True)
+              repo = root/'repo'
+              def git(*args):
+                  subprocess.run(['git', '-C', str(repo), *args], check=True)
+              git('remote', 'add', 'origin', 'https://github.com/soumik15630m/chemlab.git')
+              git('lfs', 'install', '--local')
+              target = repo/'.git/lfs/objects'/oid[:2]/oid[2:4]/oid
+              target.parent.mkdir(parents=True)
+              with zipfile.ZipFile(archive) as source:
+                  assert source.getinfo('combined.ckpt').file_size == 803123405
+                  with source.open('combined.ckpt') as member, target.open('wb') as output:
+                      shutil.copyfileobj(member, output, length=4*1024*1024)
+              with target.open('rb') as source:
+                  assert hashlib.file_digest(source, 'sha256').hexdigest() == oid
+              helper = root/'credential.py'
+              helper.write_text('''import os,sys
+          if sys.argv[1] == 'get':
+              fields = dict(line.rstrip().split('=',1) for line in sys.stdin if '=' in line)
+              if fields.get('host') in ('github.com','lfs.github.com','api.github.com'):
+                  print('username=x-access-token')
+                  print('password='+os.environ['GH_TOKEN'])
+          ''')
+              git('config', 'credential.helper', '!python '+str(helper))
+              git('-c', 'lfs.concurrenttransfers=1', '-c', 'lfs.activitytimeout=180',
+                  'lfs', 'push', '--object-id', 'origin', oid)
+              print(json.dumps({'passed': True, 'oid': oid, 'size': 803123405,
+                                'publisher_archive_sha256': archive_hash}), flush=True)
+          PY
