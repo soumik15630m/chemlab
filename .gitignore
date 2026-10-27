@@ -4,7 +4,8 @@
 /.venv-*/
 /.cache/
 /var/
-/models/
+/models/*.partial
+/models/*-extracting/
 __pycache__/
 *.py[cod]
 .pytest_cache/

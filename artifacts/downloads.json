@@ -1,0 +1,68 @@
+{
+  "total_bytes": 3315350166,
+  "runtime_snapshot": "artifacts/runtime-v1.zip",
+  "artifacts": [
+    {
+      "path": "artifacts/runtime-v1.zip",
+      "size": 13444839,
+      "sha256": "ba6481ef28897134acd4a990667230e6b3e486314b1a40f1d6668f613871d1e6"
+    },
+    {
+      "path": "models/checker-source.json",
+      "size": 2538,
+      "sha256": "1462ee7ea0028d00b30b580721270e033b88ecaeaf0a4fb01ad719b887043794"
+    },
+    {
+      "path": "models/checker/combined.ckpt",
+      "size": 916535949,
+      "sha256": "1f37473b5d0dd7200ad90c33aa3e7d93f1b59d189054e25299ee07d2d324e080"
+    },
+    {
+      "path": "models/checker/vocab.txt",
+      "size": 1907,
+      "sha256": "caa3ed8f24aacbba1ba2b708765143def893aa6f641c9e44f3334e4a1e2c0e74"
+    },
+    {
+      "path": "models/forwardchimera_denovo_pistachio.zip",
+      "size": 835317085,
+      "sha256": "f47e552396cba81a7d3d9c9c4606a62aa9ee332df83c41fc6788b67d2321a802"
+    },
+    {
+      "path": "models/generator-source.json",
+      "size": 2556,
+      "sha256": "d53f7bdd3e57ca6608fb44eb4f5564aaea8b23ac0241cf24c3c116b9136d6311"
+    },
+    {
+      "path": "models/generator/combined.ckpt",
+      "size": 803123405,
+      "sha256": "f6013a4cc078614df687c603d252584497b9a3fc480b0d3e57f5c0f199ea92b2"
+    },
+    {
+      "path": "models/generator/vocab.txt",
+      "size": 1919,
+      "sha256": "96f751c4cafa8724a0d7bc940421b95dad7a9b82da433bb29371a677b98e4e22"
+    },
+    {
+      "path": "models/openretro-train-source.json",
+      "size": 433,
+      "sha256": "97b8942c9d027b5f90b2df6fc1e4dfba570db92d468392d6c3218fd5854b1374"
+    },
+    {
+      "path": "models/openretro-train.csv",
+      "size": 15958252,
+      "sha256": "90e16c7bace48d3ed868eda41188a710ffd8b45ef0a707d17e3af1a8af3e2700"
+    },
+    {
+      "path": "models/paroutes-n1-stock.txt",
+      "size": 368802,
+      "sha256": "b8641e2028846d995953b30f7acd36e7521d0301159518d172497340a0bfb115"
+    },
+    {
+      "path": "models/retrochimera_denovo_pistachio.zip",
+      "size": 730592481,
+      "sha256": "42a9a52a53317187b39392628d8b560fd95b4311bf29ef886a030127d804b38a"
+    }
+  ],
+  "attribution": "docs/artifact-sources.md",
+  "schema_version": 1
+}

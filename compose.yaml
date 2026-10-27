@@ -8,6 +8,16 @@ x-runtime: &runtime
     WANDB_MODE: disabled
 
 services:
+  restore:
+    <<: *runtime
+    profiles: ["artifacts"]
+    pull_policy: never
+    entrypoint: ["python", "scripts/runtime_snapshot.py"]
+    command: ["restore", "/archives/runtime-v1.zip", "/restore/docker"]
+    volumes:
+      - ./artifacts:/archives:ro
+      - ./var:/restore
+
   setup:
     <<: *runtime
     build:

@@ -10,8 +10,20 @@ from pathlib import Path
 from urllib.request import Request, urlopen
 
 
+def require_materialized(path: Path) -> None:
+    files = path.rglob("*") if path.is_dir() else [path]
+    for file in files:
+        if file.is_file():
+            with file.open("rb") as stream:
+                if stream.read(128).startswith(b"version https://git-lfs.github.com/spec/v1\n"):
+                    raise ValueError(
+                        "Git LFS pointer found; run git lfs pull before starting ChemLab"
+                    )
+
+
 def fetch(url: str, destination: Path) -> None:
     if destination.exists():
+        require_materialized(destination)
         return
     destination.parent.mkdir(parents=True, exist_ok=True)
     partial = destination.with_suffix(destination.suffix + ".partial")
@@ -33,6 +45,7 @@ def main() -> None:
             raise ValueError("Checkpoint license changed; inspect before proceeding")
         destination = root / name
         if destination.exists():
+            require_materialized(destination)
             print(f"Preserving existing {name} directory", flush=True)
             continue
         archive = metadata["files"][0]

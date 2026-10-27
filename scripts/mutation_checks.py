@@ -13,6 +13,20 @@ from pathlib import Path
 
 MUTATIONS = [
     (
+        "M15-snapshot-byte-preservation",
+        "chemlab/distribution.py",
+        "shutil.copyfileobj(input_file, output)",
+        "output.write(b'')",
+        "tests/test_distribution.py::test_snapshot_restores_registry_objects_and_complete_bundles",
+    ),
+    (
+        "M16-lfs-materialization-gate",
+        "scripts/fetch_pretrained.py",
+        'if stream.read(128).startswith(b"version https://git-lfs.github.com/spec/v1\\n"):',
+        "if False:",
+        "tests/test_distribution.py::test_lfs_pointer_is_not_a_model_checkpoint",
+    ),
+    (
         "M14-compose-initialization-gate",
         "compose.yaml",
         "service_completed_successfully",
@@ -138,6 +152,11 @@ def run() -> dict:
             directory = Path(temp)
             shutil.copyfile(root / "compose.yaml", directory / "compose.yaml")
             shutil.copytree(
+                root / "scripts",
+                directory / "scripts",
+                ignore=shutil.ignore_patterns("__pycache__"),
+            )
+            shutil.copytree(
                 root / "chemlab",
                 directory / "chemlab",
                 ignore=shutil.ignore_patterns("__pycache__"),
@@ -189,7 +208,7 @@ def run() -> dict:
         "baseline_passed": True,
         "mutants": results,
         "passed": all(r["detected"] for r in results),
-        "scope": "Fourteen named behavioral mutants; no claim of exhaustive mutation coverage",
+        "scope": "Sixteen named behavioral mutants; no claim of exhaustive mutation coverage",
     }
 
 

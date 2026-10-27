@@ -3,6 +3,7 @@
 .cache
 var
 models
+artifacts
 __pycache__
 *.egg-info
 AGENTS.md

@@ -174,11 +174,11 @@ This is UI validation, not a chemistry research result.
 
 ## Current acceptance result
 
-101 pytest cases pass, including the bounded graph experiment. Ruff checking and
-format checking pass; mypy passes for all 24 engine source files. Fourteen named
+111 pytest cases pass, including the bounded graph experiment. Ruff checking and
+format checking pass; mypy passes for all 25 engine source files. Sixteen named
 behavioral mutations are detected. The test client emits one upstream deprecation
 warning; no test or check is bypassed for it. Exact versions and source hashes are
-recorded in `evaluation/reports/startup-acceptance/validation.json`. The earlier
+recorded in `evaluation/reports/lfs-distribution/validation.json`. The earlier
 release acceptance reports retain their original source hashes and counts.
 
 The default public corpus contains 40,008 OpenRetro USPTO-50K training reactions.
@@ -213,6 +213,15 @@ benchmark result. These records document reported reactions, not guaranteed
 experimental success.
 
 ## Evidence policy
+
+The LFS distribution adds operational snapshot checks, not a chemistry result.
+The frozen archive contains 39 registered artifacts and seven complete runs.
+An online SQLite backup fixes the database view; immutable objects and complete
+bundles are validated before ZIP publication. Restore checks the manifest,
+per-file hashes, database integrity and bundle bindings before publishing into a
+new directory. Tests cover corruption, unsafe paths, active runs, existing state
+and undownloaded LFS pointers. Named mutants M15 and M16 test byte preservation
+and LFS admission. Original model/data bytes and provenance are preserved.
 
 Startup validation is operational evidence, not a chemistry research result.
 `evaluation/reports/startup-acceptance/native-startup.json` records a new isolated

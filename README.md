@@ -8,6 +8,32 @@ V1 omits reaction conditions and experimental procedures. A structurally verifie
 route is not a promise of experimental success. Conflicting/incomplete evidence
 is retained and displayed separately.
 
+## Clone and download models/data
+
+Install Git and Git LFS, then clone and materialize the large files:
+
+```sh
+git lfs install
+git clone https://github.com/soumik15630m/chemlab.git
+cd chemlab
+git lfs pull
+```
+
+The clone normally downloads LFS files automatically; `git lfs pull` also handles
+a clone made with smudging disabled. The download includes both pretrained
+checkpoints, tokenizers, original publisher ZIPs, stock and public precedent data
+(about 3.3 GB together), plus `artifacts/runtime-v1.zip` (about 13.4 MB).
+`artifacts/downloads.json` lists exact sizes and SHA-256 hashes. Use `git lfs pull`
+to ensure the payloads are present, rather than relying on source archive settings.
+Individual downloads: [generator weights](models/generator/combined.ckpt),
+[checker weights](models/checker/combined.ckpt) and
+[frozen runtime snapshot](artifacts/runtime-v1.zip).
+Undownloaded LFS pointer files are rejected during startup with a recovery message.
+See `docs/artifact-sources.md` for attribution, licenses and data limitations.
+
+After downloading, choose Docker or the native venv below. Both launchers reuse
+the materialized model/data files. Runtime history restoration is optional.
+
 ## Start with Docker
 
 Install Docker Desktop (Linux containers) or Docker Engine with Compose v2 or
@@ -18,8 +44,8 @@ docker compose up --build
 ```
 
 Open [ChemLab](http://127.0.0.1:8080) once the application reports it is running.
-Compose builds the pinned Python 3.11 CPU environment, downloads the two models
-and public data, validates/registers them, and starts the web app. Setup failure
+Compose builds the pinned Python 3.11 CPU environment, reuses or downloads the
+models and public data, validates/registers them, and starts the web app. Setup failure
 prevents the app from starting. No host Python installation is required.
 
 The optional convenience script does the same thing:
@@ -95,8 +121,9 @@ Interrupted/inconsistent artifacts fail setup and need inspection.
 | `var/local/` | Native registry, cache, runs and evidence bundles |
 | `var/docker/` | Container registry, cache, runs and evidence bundles |
 
-All four are ignored by Git. Native and container registries are separate because
-model manifests bind absolute checkpoint paths. Keep the state directory with its
+Models and the frozen runtime ZIP are versioned through Git LFS. The venv and
+mutable state directories remain ignored by Git. Native and container registries
+are separate because model manifests bind absolute checkpoint paths. Keep the state directory with its
 corresponding environment. Use one launcher at a time while it prepares shared
 model downloads. Both launch paths bind the web interface to localhost only.
 
@@ -111,6 +138,32 @@ are verified and retained. Unsupported source rows are quarantined with an audit
 This corpus is not independent confirmation; overlap with a future benchmark must
 be audited. The underlying dataset license is not separately specified in the
 inspected repository, and is recorded separately from its MIT code license.
+
+## Restore the included runtime history (optional, Docker)
+
+The frozen ZIP contains the SQLite registry/cache and complete evidence bundles
+for seven prior runs. It is a consistent database backup with per-file hashes;
+WAL/shared-memory files and unfinished runs are excluded. It preserves the
+original `/workspace/var` and `/workspace/models` bindings, so use it with Docker.
+The native launcher prepares its own platform-specific registry instead.
+
+On a fresh clone, before starting the application:
+
+```sh
+docker compose build setup
+docker compose --profile artifacts run --rm restore
+docker compose up --build
+```
+
+Restore validates the archive's paths, sizes, hashes, database and complete
+bundles, then publishes to `var/docker`. It requires that directory to be absent
+and refuses to overwrite any existing state. If you already ran the app, keep
+using your current state; the downloaded snapshot stays available for inspection.
+Stopping the app and deleting existing data is not part of this restore command.
+
+The snapshot is historical computational evidence, not a new chemical validation
+or a portable cache for arbitrary model versions/platforms. New runtime activity
+remains local; it does not modify the committed download.
 
 ## CLI
 
@@ -165,8 +218,9 @@ experiment exhaustively compares 1,572 cases with a separately formulated graph
 oracle. Mutation experiments require assertion failures rather than import/setup
 errors. These are scoped software checks, not proof of chemical feasibility.
 
-The current acceptance suite passes 101 tests and detects 14 named mutations;
-lint, formatting and type checks also pass. Startup evidence is under
+The current acceptance suite passes 111 tests and detects 16 named mutations;
+lint, formatting and type checks also pass. The current distribution suite is
+under `evaluation/reports/lfs-distribution/`. Earlier startup evidence is under
 `evaluation/reports/startup-acceptance/`, with the built-image suite under
 `evaluation/reports/startup-image-acceptance/`. A fresh isolated Linux venv
 completed real pretrained route generation and verification. Compose passed
