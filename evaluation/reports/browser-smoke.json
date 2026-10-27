@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "javascript_errors": [],
+  "checks": [
+    "registered model selectors",
+    "completed real-model route display",
+    "molecule rendering",
+    "desktop layout",
+    "mobile overflow"
+  ],
+  "scope": "Chromium browser smoke test; not an accessibility or chemical benchmark"
+}

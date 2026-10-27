@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>ChemLab | Synthesis workspace</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+<header><a class="brand" href="/">CHEMLAB<span> / synthesis workspace</span></a><span class="local">LOCAL RESEARCH WORKSPACE</span></header>
+<main>
+  <section class="intro"><p class="eyebrow">FROM MOLECULE TO POSSIBLE ROUTES</p><h1>Start with the molecule.<br>Inspect every step.</h1><p>Explore synthesis routes, trace their sources, and examine the evidence behind each reaction.</p></section>
+  <div id="message" role="status" aria-live="polite"></div>
+  <div class="workspace">
+    <aside>
+      <form id="search-form" class="panel">
+        <div class="section-heading"><span class="number">01</span><h2>Plan a synthesis</h2></div>
+        <label for="target">Target molecule <span>SMILES</span></label>
+        <textarea id="target" required spellcheck="false" placeholder="CC(=O)Oc1ccccc1C(=O)O" rows="3"></textarea>
+        <div id="preview"></div>
+        <label for="generator">Reaction generator</label><select id="generator" required></select>
+        <label for="checker">Forward checker</label><select id="checker" required></select>
+        <label for="stock">Starting-material stock</label><select id="stock" required></select>
+        <label for="corpus">Reaction precedent</label><select id="corpus"><option value="">Not configured</option></select>
+        <details><summary>Search and verification settings</summary>
+          <div class="fields">
+            <label>Expansion attempts<input id="expansions" type="number" value="30" min="1" max="10000" required></label>
+            <label>Candidate routes<input id="routes" type="number" value="5" min="1" max="100" required></label>
+            <label>Predictions per step<input id="predictions" type="number" value="10" min="1" required></label>
+            <label>Forward top-k<input id="forward-k" type="number" value="5" min="1" required></label>
+            <label>Reaction depth<input id="depth" type="number" value="6" min="1" max="30" required></label>
+            <label>Search seed<input id="seed" type="number" value="0" required></label>
+          </div>
+          <label for="profile">Mapping profile</label><select id="profile"><option value="auxiliary">Auxiliary mapping</option><option value="mapping-required">Require validated mapping</option></select>
+          <label class="checkbox"><input id="diagnostics" type="checkbox"> Run full diagnostics after rejection</label>
+        </details>
+        <button id="submit" type="submit">Explore synthesis routes <span aria-hidden="true">&rarr;</span></button>
+        <p class="fine">Routes omit reaction conditions. Structural verification and model consistency do not establish experimental feasibility.</p>
+      </form>
+      <details class="panel"><summary>Import your own stock</summary><form id="stock-form">
+        <label>Stock name<input id="stock-name" required pattern="[A-Za-z0-9_.-]+"></label>
+        <label>Source<input id="stock-source" required></label><label>License / usage terms<input id="stock-license" required></label>
+        <label>One SMILES per line<textarea id="stock-smiles" rows="5" required></textarea></label>
+        <button type="submit">Save immutable snapshot</button>
+      </form></details>
+    </aside>
+    <section class="results-area">
+      <div class="section-heading"><span class="number">02</span><h2>Search notebook</h2><button class="quiet" id="refresh" type="button">Refresh</button></div>
+      <div id="runs" class="runs"></div>
+      <div id="result" class="panel empty"><span class="empty-mark">C &mdash; C</span><h3>Your routes will appear here</h3><p>Choose a target and registered models to begin. Every completed run keeps its configuration, predictions, and verification reports.</p></div>
+    </section>
+  </div>
+</main>
+<footer>CHEMLAB <span>Deterministic checks. Traceable evidence. Replaceable models.</span></footer>
+</body></html>

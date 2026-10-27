@@ -1,0 +1,16 @@
+{
+  "backward_manifest": "generator-v1",
+  "forward_manifest": "checker-v1",
+  "stock_ref": "paroutes-n1-v2",
+  "corpus_ref": "uspto50k-training-v1",
+  "prediction_count": 10,
+  "forward_k": 5,
+  "logical_expansion_limit": 30,
+  "route_limit": 5,
+  "max_depth": 6,
+  "actual_inference_limit": null,
+  "time_limit_seconds": null,
+  "mapping_profile": "auxiliary",
+  "full_diagnostics": false,
+  "seed": 0
+}

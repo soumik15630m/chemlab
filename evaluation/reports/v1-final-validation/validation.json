@@ -1,0 +1,125 @@
+{
+  "commands": [
+    {
+      "command": [
+        "ruff",
+        "check",
+        "chemlab",
+        "tests",
+        "scripts",
+        "--no-cache"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "All checks passed!\n"
+    },
+    {
+      "command": [
+        "ruff",
+        "format",
+        "--check",
+        "chemlab",
+        "tests",
+        "scripts",
+        "--no-cache"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "39 files already formatted\n"
+    },
+    {
+      "command": [
+        "mypy",
+        "chemlab",
+        "--cache-dir",
+        "/tmp/mypy-cache"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "Success: no issues found in 22 source files\n"
+    },
+    {
+      "command": [
+        "/usr/local/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "--basetemp=/tmp/contract-tests",
+        "-o",
+        "cache_dir=/tmp/pytest-cache",
+        "--junitxml=/reports/v1-final-validation/contract-suite.xml"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "........................................................................ [ 84%]\n.............                                                            [100%]\n=============================== warnings summary ===============================\n../usr/local/lib/python3.11/site-packages/fastapi/testclient.py:1\n  /usr/local/lib/python3.11/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.\n    from starlette.testclient import TestClient as TestClient  # noqa\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n85 passed, 1 warning in 3.32s\n"
+    },
+    {
+      "command": [
+        "/usr/local/bin/python",
+        "scripts/mutation_checks.py",
+        "/reports/v1-final-validation/mutation-report.json"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "M09-tokenizer-admission: detected\nM01-stereo-preservation: detected\nM02-ancestor-recurrence: detected\nM03-precursor-completeness: detected\nM04-score-direction: detected\nM05-fail-precedence: detected\nM06-cache-integrity: detected\nM07-expansion-accounting: detected\nM08-report-binding: detected\n"
+    }
+  ],
+  "passed": true,
+  "recorded_at_utc": "2026-10-26T19:38:53.421045+00:00",
+  "scope": "Local Docker computational validation",
+  "source_hashes": {
+    "chemlab/__init__.py": "967dcbef54362be379c7d424983738a681f9835fb3ea3134139f0e924ee95b38",
+    "chemlab/__main__.py": "ee0c78048a04cb2deea428ac13355159ce1792a087e135082a3543c53974c9ee",
+    "chemlab/adapters/__init__.py": "ec26ec9348759730d3433631ae615a0741a404ee5120134adbfe390ad2b42812",
+    "chemlab/adapters/models.py": "06a9e498e35fa613929619fec14b327e2545436d8d6b057769a3db8e064d72af",
+    "chemlab/adapters/sdk.py": "2dfc9a9f93e89b55d126d51542c0e1c895e5aa566d9e9c6472cee640df25a713",
+    "chemlab/api.py": "6cfc6a5ee1ce2506b600c4b6e9d68fde06a062ffa9523a4ae993cfa4e1c395aa",
+    "chemlab/application.py": "5f1985b1872626f2f83b436dff8e0b9cb1a648da60afa9031ac73874616a1056",
+    "chemlab/chemistry/__init__.py": "8bb890b622c6165905032eef0f7a07a72653ad7e90a2f2d58cbe0c35b41fff95",
+    "chemlab/chemistry/identity.py": "ae0d388c880cf0f0f3cf02fa918ab92b3c6447e647a8e28eb4eda03a0b89f028",
+    "chemlab/cli.py": "a48883873e5a32a9a1b45b62851c06b6dcd74c09b64a8c1353ef3106984540fd",
+    "chemlab/evaluation/__init__.py": "abbfc4cb6c389582673e352bb5568ac836f1b44b86b74bcb7c229bab6cc21618",
+    "chemlab/evaluation/datasets.py": "0ea2620c6ac15a2730a7cb914492e99d85c851add247bb88b03e0cf50a7e6c31",
+    "chemlab/evidence/__init__.py": "9606677d57810eac168e2ea8a1e59c2abd0e2e41d907481685313913378205ee",
+    "chemlab/evidence/checks.py": "2fe64679eb7258d368ad4ed8198a521bc35e61c8147c483f7203d77163d81600",
+    "chemlab/planning.py": "068f43b67f405ba792315db13ddb9fe2b51643827e39468954f2214783fb5778",
+    "chemlab/records.py": "3ff4988aa0e67c10e8fa11efa7bbb386f42f7d9115134ee8ce87cb60f7133f8a",
+    "chemlab/registry.py": "5f118a4a43afb903fe680bb1d952bcfb4092c831e68dfa0f48aa2dabe5caef1c",
+    "chemlab/reporting/__init__.py": "7aae3ca1fbd2b1c9df4db0d1e6754a59e13fe5c0c4b6ed08fa08c40580eabc5a",
+    "chemlab/reporting/bundles.py": "88f74ab591b9c7e5771ff1ed1ce5e36b45fcd3953809e6611f40dfc5d1ee31f6",
+    "chemlab/store.py": "33e3f7ad1374a533f48cf8468ce72fae6e2f374d3237fe70980c04044ea36b58",
+    "chemlab/verification/__init__.py": "06e3ee8d4cd2df45d4d9a0450be8d86b9957d0119ef4682febbf1d8376ad42a9",
+    "chemlab/verification/verifier.py": "6646164387200c5c5ef829c5e831a8345ed1f747b39c9abf0b5c3f84c1a92768",
+    "scripts/browser_smoke.py": "047bbfc94fa997050da41a333bb111adb447c753859d8a007f57c64d5f4fbc32",
+    "scripts/fetch_pretrained.py": "b266ea25d154640d2953c0a502fb1862985cfd0a4828270f9cd6a3da86a614d3",
+    "scripts/mutation_checks.py": "4790f5cf7efd4626bd1bbc0ce2486774adc4b442f3bba402da7aa111951f409e",
+    "scripts/pretrained_parity.py": "8e95a3ba86a10aec0c034c5800036a33bc755168b3734039108c594a8752b523",
+    "scripts/record_validation.py": "1cd1c6ba0a7e9cc1d51ab2742a5078ecbc4dce62413f1c461477993027de7cc5",
+    "scripts/smoke_inference.py": "4265c415a52784c22263777d1687c79f7bab20b923fb944a447dc71c3b357a2c",
+    "tests/conftest.py": "c93a68bb6b4daaf987c2ca75edc218a5d195da1952e0fbe2ea3434427bb3bd33",
+    "tests/test_adapters.py": "e82185734799d132e4b128c58e7c07caac0c0f68cb89070114a01d147ebf3f9c",
+    "tests/test_api.py": "39aa70e7889089c2c8d3e70c674d4f81ff236ef98a688c56d8b7057d38b424f2",
+    "tests/test_bounded_graphs.py": "e209626554da6ffb63ab0f8728e859afe68126aac007e92c586bdaef53119b6f",
+    "tests/test_determinism.py": "9124708fd9ecbd6968b61158e51adc9c22d9bd89ff21b120a94d55d2bf041a11",
+    "tests/test_evidence.py": "eb1e47aa4ef1c84a4ac91d30630109f27e257c4f8d610e1da18e6935f03ba67b",
+    "tests/test_identity.py": "54015125a61e6697985d2d5d23767521cf29bb8900798c41a41a8ddf29df118e",
+    "tests/test_infrastructure.py": "99dd63565dc88c515ffcb4911d82ccfecf299c5e0279da7da7df1e7664d09289",
+    "tests/test_planning.py": "c138330991567bab93344f0ab51328b51c85b402bd9b709cd5b300e332a18e90",
+    "tests/test_plugins.py": "bb0c1dafb4f8f49abac863d5614c9b2afc3731539c00630aa9f5778aab2058e6",
+    "tests/test_verification.py": "735ec741d1dbb483528ea3f4bc01e636a79e9bf40b90e1d4995735130173d431"
+  },
+  "test_counts": {
+    "errors": 0,
+    "failures": 0,
+    "skipped": 0,
+    "tests": 85
+  },
+  "versions": {
+    "fastapi": "0.162.0",
+    "pydantic": "2.14.1",
+    "pytest": "9.1.1",
+    "rdchiral": "1.1.0",
+    "rdkit": "2026.9.1",
+    "syntheseus": "0.9.0"
+  }
+}

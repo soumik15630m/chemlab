@@ -1,0 +1,39 @@
+x-runtime: &runtime
+  image: chemlab:compose
+  read_only: true
+  tmpfs:
+    - /tmp
+  init: true
+  environment:
+    WANDB_MODE: disabled
+
+services:
+  setup:
+    <<: *runtime
+    build:
+      context: .
+      target: pretrained
+    entrypoint: ["python", "-m", "chemlab.bootstrap"]
+    command: ["--state", "/workspace/var", "--prepare-only"]
+    volumes:
+      - ./var/docker:/workspace/var
+      - ./models:/workspace/models
+
+  chemlab:
+    <<: *runtime
+    pull_policy: never
+    depends_on:
+      setup:
+        condition: service_completed_successfully
+    ports:
+      - "127.0.0.1:${CHEMLAB_PORT:-8080}:8080"
+    volumes:
+      - ./var/docker:/workspace/var
+      - ./models:/workspace/models:ro
+    command: ["serve", "--host", "0.0.0.0", "--port", "8080"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/api/health', timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 15s

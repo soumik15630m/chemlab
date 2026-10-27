@@ -1,0 +1,21 @@
+{
+  "state_directory": "var/docker",
+  "health": "healthy",
+  "runtime": {
+    "health": {
+      "status": "ok",
+      "planner": "Syntheseus Retro*",
+      "identity": "identity-v1"
+    },
+    "completed_runs": 7,
+    "prior_precedent_run_preserved": true
+  },
+  "passed": true,
+  "container_image": "sha256:ab6ccb9e666060bc0a80acd339f2211ee689838bc43760a63be55861a107c754",
+  "image": "sha256:ab6ccb9e666060bc0a80acd339f2211ee689838bc43760a63be55861a107c754",
+  "root_read_only": true,
+  "validated_source_unchanged": true,
+  "setup_exit": 0,
+  "models_read_only": true,
+  "url": "http://127.0.0.1:8080"
+}

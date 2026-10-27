@@ -1,0 +1,328 @@
+# Retrosynthesis Architecture
+
+Final reconciled design — 15 October 2026
+
+## 1. Objective and boundaries
+
+Given a target molecule and a fixed starting-material inventory, generate multiple candidate retrosynthetic routes, verify their computational structure, and report reaction evidence without overstating what it establishes.
+
+Priority order:
+
+1. Correct molecular identity, route construction, and evidence binding.
+2. Honest handling of incomplete or conflicting evidence.
+3. Candidate coverage and reproducible evaluation.
+4. Computation savings that preserve the above.
+
+A verified route satisfies the software contract below. It is not a claim that the route will work experimentally. Forward prediction, template replay, and patent precedent are supporting signals with different limitations.
+
+This is an implementation specification. It does not assert that integrations or tests are complete. Preserve the existing template-based model, template-free model, forward-check results, and xTB artifacts; reuse them when their provenance and inputs are sufficient.
+
+## 2. Stack and ownership
+
+| Component | Choice | Project responsibility |
+|---|---|---|
+| Molecular operations | RDKit | Identity policy, supported inputs, boundary tests |
+| Template application | RDChiral | Checkpoint/template alignment and replay records |
+| Reaction preprocessing | ReactionUtils when needed | Dataset-specific ingestion and provenance |
+| Planning backbone | Syntheseus | Model adapters, configuration, integration tests |
+| Initial search | Syntheseus Retro* | Verify pinned implementation behavior; record baseline |
+| Existing predictors | Retain both models | One adapter per model; separate runs by default |
+| Inventory | Framework inventory plus immutable stock snapshot | Exact matching and snapshot binding |
+| Evidence storage | SQLite and immutable artifact files | Schema, keys, transactions, invalidation |
+| Route diversity | route-distances after format compatibility is tested | Explicit distance configuration and selection |
+| Benchmark | PaRoutes | Frozen splits, overlap audit, experiment runner |
+| Output verification | Small project-owned module using RDKit | Independent reconstruction and decision rules |
+| Inference | Existing backend; PyTorch where applicable | Fixed checkpoint, dtype, decoding, and execution settings |
+
+Do not introduce a second planning framework into the runtime. AiZynthFinder can be an external comparison later. No new model ensemble, expert rule system, reviewer-feedback training, or energetics stage is required for this design.
+
+## 3. Concrete data contracts
+
+Store versioned JSON records with schema validation. Use immutable IDs for artifacts and preserve their source representations. Use discriminated success/error record variants: successful molecule records require canonical identity; parse failures retain original input and an error without a fabricated canonical SMILES. Successful scored predictions require finite scores; inference failures carry an error and no fabricated score.
+
+### Molecule
+
+Required fields: original SMILES, canonical isomeric SMILES, identity-policy ID, stereo completeness flags, and parsing status. Retain mapped SMILES separately when supplied. Store hashes for indexing, but compare complete canonical identity strings before treating records as equal.
+
+Default identity policy `identity-v1`:
+
+- Parse and sanitize using the pinned RDKit version.
+- Remove atom-map numbers only when generating chemical identity keys.
+- Preserve isotopes, formal charge, disconnected fragments, and specified stereochemistry.
+- Do not neutralize, strip salts, or merge tautomers.
+- Treat unspecified stereochemistry as unspecified, never as a wildcard for a specified stereoisomer.
+- Canonicalize atom ordering and fragment ordering without changing the represented structure.
+
+Use this policy for target matching, stock membership, route connectivity, and duplicate detection. Model preprocessing is separate and must be recorded. If preprocessing loses information needed to check the requested target, report that limitation rather than silently weakening target identity.
+
+The initial input scope is molecules RDKit can sanitize and the chosen model can represent. Unsupported elements, query atoms, or representation features receive `unsupported_input`, with a reason. Model-specific support must be recorded in its manifest; do not invent a universal element whitelist.
+
+### Reaction candidate
+
+Required fields: product identity, precursor identities, source model/checkpoint, raw model output, score and score interpretation, decoding settings, and optional template ID and atom mapping.
+
+Preserve precursor occurrences from the raw output. A separate unique-precursor set may be used by the planner to represent availability dependencies. Neither repeated molecular occurrences nor the planner's set representation establishes stoichiometric coefficients. Quantitative stoichiometry is outside this version's contract.
+
+### Route
+
+Export a rooted reaction tree: a molecule occurrence selects one reaction, and that reaction includes all required precursor dependencies. Each terminal molecule must be in stock. Serialize separate occurrences when an intermediate is used on different branches; the planner may internally share nodes.
+
+Use unique occurrence IDs and explicit edges. Preserve the selected reaction's original precursor record so a framework conversion cannot silently drop a distinct precursor. Require exactly one root, exactly one parent for every non-root occurrence, full reachability from the root, and no shared occurrence IDs across branches. Reject repeated identity-v1 molecule identities on the same ancestor path, even when occurrence IDs differ. Repeated chemical identities on different branches are allowed.
+
+### Check result
+
+Required fields: check name/version, exact input references, status, reason code, evidence references, and execution settings.
+
+Use exactly these statuses:
+
+| Status | Meaning |
+|---|---|
+| `pass` | Executed and satisfied its stated criterion |
+| `fail` | Executed and violated its stated criterion |
+| `unknown` | Executed, but available information cannot determine the criterion |
+| `not_checked` | Not executed |
+| `error` | Execution failed or timed out |
+| `not_applicable` | Criterion does not apply under the declared representation |
+
+A missing mapping is `unknown` for mapping validation, not `pass`. Template replay is `not_applicable` for a template-free prediction. Missing source data and tool errors remain distinguishable.
+
+## 4. Model integration
+
+Each adapter returns reaction candidates through the Syntheseus interface. Invoke the public model call path so framework caching and deduplication operate as intended.
+
+For the template-based model, bind the checkpoint, feature settings, ordered template vocabulary, and application settings in one manifest. Apply templates through RDChiral. For template-free predictions, validate the generated molecules without requiring a template.
+
+Before framework deduplication, persist an immutable prediction record containing effective model input, checkpoint and inference settings, raw output, parsed candidates, candidate indices, original precursor occurrences, and scores. Bind candidates to this record by content hash and candidate index. Its creation occurs inside the adapter boundary; recomputing a hash later does not prove that an arbitrary supplied record originated from inference.
+
+Each adapter must declare score direction and the explicit transformation into the search implementation's required cost/prior, including treatment of zero probabilities and unsupported scores. Reject incompatible score configurations at startup. Default duplicate policy: retain the best identical reaction according to the declared direction; preserve all contributing records. Do not sum scores or call them probabilities unless justified by model semantics. Stable ties use reaction identity followed by source candidate index.
+
+Run the two models separately with the same downstream contracts and inventory. Do not combine their scores or interpret agreement as independent confirmation. An ensemble would be a separate experiment.
+
+Acceptance test: direct inference and adapter inference must agree on candidate identities, score interpretation, and declared duplicate handling for a fixed reference set.
+
+## 5. Planning and termination
+
+Search calls the model adapter repeatedly; candidate generation is part of search, not a one-time stage before it.
+
+Use the pinned Syntheseus Retro* implementation initially. Before accepting it, test inventory termination, cycles, shared intermediates, solved-state propagation, route extraction, and precursor conversion on fixtures with explicit expected results: stocked root, one valid chain, one missing AND precursor, shared intermediate across branches, molecular ancestor recurrence, and a corrupted exported precursor. Molecular identity alone must not erase path-dependent cycle constraints.
+
+Do not label this implementation PUCT or custom AND/OR MCTS. Additional algorithms or deferred-branch policies require explicit extensions and comparisons.
+
+Keep the selected model's prediction count/beam and search limits in run configuration. Define the primary reproducible budget as logical expansion attempts, counting cache hits as attempts. Log actual inference executions and cache hits separately; use an actual-inference limit only as a separately declared operational limit. Wall-clock limits are operational and can change coverage as execution gets faster. Do not lower them as a supposed zero-loss optimization. Finite candidate generation and finite search mean coverage is limited; exhaustive chemistry is not claimed.
+
+Report two separate fields:
+
+- `termination_reason`: already_in_stock, budget_exhausted, candidate_space_exhausted, requested_route_count_reached, or execution_error.
+- `candidate_routes_found`: count before verification.
+
+This permits routes to be found before a budget expires. Record the specific limit when termination_reason is budget_exhausted. Stop-route-count thresholds count distinct candidate route identities before verification; do not describe that threshold as a number of verified routes. A later verified-route stopping mode requires an explicit interleaved verification protocol. None of these outcomes proves chemical unsynthesizability. An already-stocked target produces a zero-reaction availability result; evaluate it separately from synthesis-route success.
+
+Baseline expansion uses structural checks and cycle constraints. Forward evidence does not prune the baseline search. This avoids converting forward-model false negatives into hard exclusions and makes evidence scheduling independent of search discovery.
+
+## 6. Independent route verification
+
+Verification is required from the first end-to-end version. The verifier reconstructs serialized output and does not trust planner solved flags, identity keys, or approval annotations. It may share chemistry libraries; it is an independent control path, not an independent scientific oracle.
+
+For each route:
+
+1. Validate schema, occurrence IDs, edges, required fields, and finite numeric scores.
+2. Reparse serialized molecule records and recompute identity using `identity-v1`.
+3. Confirm root identity matches the requested target, including specified stereo, charge, isotopes, and fragments.
+4. Resolve each selected step to its immutable adapter prediction record and candidate index. Verify model/checkpoint, effective input, proposed product, and original precursor record. Compare exported dependencies against that authoritative candidate, not another field reconstructed from the export. For every non-root occurrence require exactly one parent; require a single root and full reachability. Check reaction direction, product/precursor adjacency, exactly one selected reaction per expanded molecule occurrence, complete precursor dependencies, and no extraneous branches.
+5. Reject repeated identity-v1 molecular identities along an ancestor path, regardless of distinct occurrence IDs. Permit the same identity on separate branches. Reject unresolved non-stock terminal molecules.
+6. Recheck all terminal identities against the pinned stock snapshot.
+7. For template-based steps, replay the recorded template and confirm the reported precursor dependency set is an allowed output. Retain original precursor occurrence information in the report.
+8. Validate evidence bindings and produce a report bound to the route hash and verification-policy version.
+
+Do not require equality of total reactant and product atom counts: dataset records may omit participants or byproducts.
+
+Mapping policy is `auxiliary` by default: separately check map-number uniqueness within each reaction side, mapped element/isotope correspondence, and represented product-atom provenance. Missing mapping is unknown. Invalid auxiliary mapping is fail, is quarantined from evidence that depends on it, and does not alone reject an otherwise structurally valid unmapped reaction. Quarantine means retaining the original record with its failure and excluding it from mapping-dependent claims, not editing the source prediction.
+
+If mapping is consumed by template application, identity conversion, or another mandatory check, that dependency must be declared: invalid mapping cannot be ignored to pass that check. A named `mapping-required` verification profile additionally requires every step to pass mapping validation; missing/indeterminate mapping makes that profile unresolved, and invalid mapping rejects it. Report the active profile. A learned mapper may assist later; its outputs are not independent ground truth.
+
+Stock membership means membership in the configured snapshot, not live supplier availability.
+
+## 7. Chemical evidence
+
+### Forward consistency
+
+For every non-rejected route step, run or validly reuse the chosen forward predictor. Store its effective input, checkpoint, decoding settings, full requested output list, and comparison result.
+
+The initial criterion is exact `identity-v1` match to the proposed product among the requested top-k predictions. `k` is a required frozen experiment parameter; no universal value is assumed. Record matching rank. Apply the following decision table in order. A failure here describes model consistency, not chemical impossibility.
+
+| Situation | Check status |
+|---|---|
+| Predictor failed or timed out | error |
+| Check was not executed | not_checked |
+| Effective model input loses target-relevant information needed for comparison | unknown |
+| Any requested prediction exactly matches identity-v1 | pass |
+| No exact match, but a predicted product matches all non-stereo identity features and all jointly specified stereo assignments, with remaining stereo unspecified on one side | unknown |
+| Completed valid prediction list has neither an exact match nor the above stereo ambiguity | fail |
+| Output cannot be interpreted under the adapter schema | error |
+
+The adapter must implement and test the stereo-compatibility comparison rather than simply deleting every stereo annotation. An unspecified target is not a wildcard for an explicitly specified prediction. An empty prediction list returned as a successful model result is fail; an execution failure is error.
+
+Conditions absent from a conditions-free predictor are reported as an unchecked limitation. They do not make every such check unknown: the check tests product consistency under that model's defined inputs, not condition feasibility.
+
+### Public precedent
+
+Start with exact product-plus-precursor matching and template lookup over a versioned public corpus. Exact matching ignores precursor ordering but preserves the chosen representation's multiplicity policy; record that policy. Call this an exact represented-reaction match, not an exact match of conditions, yield, or full experimental procedure.
+
+Return all exact matching source IDs. Template-only matches are labeled separately. Reaction-environment similarity is deferred until its representation, distance, and retrieval scope are specified and tested.
+
+Precedent fields: retrieval status, corpus/version, query policy, match type, source record IDs, and available source references. A successful search with no match supplies no positive evidence but is not a failed reaction check. A source record documents a reported reaction; it does not certify the whole proposed route.
+
+RDKit SubstructLibrary is optional only when a later retrieval query actually needs substructure matching. It is not a substitute for a reaction-similarity definition.
+
+## 8. Output decisions and ranking
+
+Keep these dimensions separate:
+
+| Field | Values and decision |
+|---|---|
+| `structural_status` | `verified` if mandatory structural checks pass; `rejected` on a deterministic failure; `unresolved` if a mandatory check cannot complete |
+| `forward_status` | `consistent` if all steps pass; `conflict` if any step fails; `incomplete` if none fail but some are unknown/not_checked/error |
+| `precedent_status` | Retrieval completion plus per-step match categories; not a chemical acceptance gate |
+| `mapping_coverage` | Checked steps, missing steps, and failed steps; active auxiliary or mapping-required profile |
+
+Zero-reaction availability results have forward and precedent evidence marked not_applicable.
+
+In the default auxiliary-mapping profile, structural status excludes auxiliary mapping failure unless a mandatory operation depends on that mapping. In the mapping-required profile, mapping checks participate in structural status as specified above. For mandatory checks, any fail takes precedence over unknown/error; otherwise an incomplete required check yields unresolved.
+
+Publish separate lists for structurally verified forward-consistent routes, structurally verified routes with conflicting/incomplete forward evidence, unresolved routes, and rejected diagnostics. Do not present these as calibrated chemical confidence tiers. Precedent absence does not disqualify an otherwise consistent prediction; retrieval failure remains visible.
+
+Within the same list, use the configured baseline search score with documented direction and stable ties. Do not blend forward score, precedent, and model scores into an invented feasibility probability. Preserve all evaluated candidates in machine-readable output. Diversity selection creates a labeled presentation subset after verification; it does not erase the complete result set.
+
+Define `route-identity-v1` recursively from the root identity and the selected product/unique-precursor dependency set at each step, with child branch signatures sorted deterministically. Ignore occurrence IDs, branch order, source model, template ID, and duplicate notation for an identical precursor dependency. Include every selected downstream transformation, so alternative syntheses of an intermediate remain different routes. Retain raw occurrence records and all model/template provenance separately; this identity describes an availability route, not stoichiometry. Use the full canonical signature for equality and a hash for indexing. Count duplicate discoveries separately from distinct routes. Deduplicate before route-count termination and diversity selection; when identical routes have different search scores, retain the best under the declared direction and preserve all source records.
+
+## 9. Data isolation and replay
+
+Record dataset splits, stock snapshots, checkpoint training provenance, template vocabulary, software versions, identity policy, inference configuration, search budgets, seeds, and termination reasons.
+
+Use PaRoutes reference routes and stock sets under an explicit evaluation manifest. Training/development data may support prediction and permitted precedent retrieval. Final reference-route records must not be used for training, guidance, or purportedly independent evidence.
+
+Do not require every test reaction template to be absent from training unless template novelty is the stated experiment. Distinguish reaction overlap, target overlap, and template overlap. Audit each relevant level and disclose unknown pretrained training provenance.
+
+Use separate evidence namespaces or access controls for training/development and final-reference records. Cache reuse must respect these restrictions. Final evaluation uses frozen artifacts and no tuning on outcomes.
+
+Replaying deterministic validation must reproduce check statuses for the same artifacts. Completed output is a bundle containing route records, raw prediction/evidence references, verification reports, run manifest, and file hashes. Write into a staging location, validate all references and report-to-route hashes, then atomically publish a completion manifest/pointer. Readers accept only bundles marked complete with matching hashes. Never overwrite a report in place for a changed route. Interrupted writes remain incomplete and cannot be presented as verified output.
+
+Neural predictions can be replayed as stored artifacts; reproducing them by fresh inference additionally depends on the recorded backend's numerical determinism. Do not promise bitwise reproducibility across devices or versions.
+
+## 10. Computation savings allowed by default
+
+### Exact caching
+
+Use Syntheseus inference caching and SQLite-backed persistent records. Cache by the actual effective model input, not merely chemically equivalent SMILES. Bind checkpoint, preprocessing, backend/precision policy, decoding, requested output count, and stochastic realization where applicable. Chemistry checks additionally bind their policy and relevant corpus/stock snapshot.
+
+A single request key may serve simultaneous identical callers. Atomically publish complete results; validate bindings and hashes on read. Keep errors separate from completed no-match results. Do not replay one stochastic sample where independent samples are required.
+
+### Step reuse with route reconstruction
+
+The verifier may reuse its own completed checks for identical step inputs across routes. It may reuse raw forward predictions and source records after checking their applicability. It must independently reconstruct root identity, connectivity, branch completeness, cycles, and evidence placement for every route.
+
+Keep planner approval flags outside the verifier's trust boundary. Within a verifier run, parse each identical serialized molecule once into verifier-owned state. Never reuse mutable molecule objects without controlling mutation.
+
+### Check ordering
+
+Run schema, identity, graph, stock, and template checks before expensive evidence. A decisive deterministic failure may stop later checks; mark them not_checked. Full-diagnostics mode executes remaining applicable checks. Both modes must produce the same structural disposition, but need not produce the same number of diagnostic failures.
+
+### Indexes and precomputation
+
+Use exact SQLite indexes for stock identities, reaction keys, template IDs, cache keys, and source IDs. Compare full identities after hash lookup. Precompute normalization, identity, fingerprints where needed, and parsed templates for immutable inputs. Bind artifacts to library and policy versions.
+
+Load models/templates once per persistent worker. Use ProcessPoolExecutor for independent CPU tasks, a controlled SQLite writer/transaction strategy, and stable result ordering. Parallelize targets or post-search checks before parallelizing search. Avoid CPU oversubscription and unnecessary duplicate GPU models.
+
+### Inference overhead
+
+For PyTorch paths that require no gradients and pass the adapter parity fixtures, use model.eval() and torch.inference_mode(). Preserve the reference dtype, input-shaping policy, and backend. Gradient-dependent components need their appropriate execution mode.
+
+### Changes needing separate evaluation
+
+Larger batches, ONNX conversion, torch.compile, fused kernels, lower precision, quantization, approximate retrieval, smaller beams, and parallel search are not assumed zero-loss. Numerical differences can change close rankings; altered search order or candidate limits can change discovered routes.
+
+For optimization comparisons, use the same candidate inputs and logical budgets. Require unchanged deterministic statuses, evidence bindings, route identities, and ranking ties. Record intentional diagnostic short-circuiting. A faster wall-clock-limited search can find more routes; that is a coverage change, not identical execution.
+
+## 11. Evaluation and release checks
+
+| Area | Required tests/measurements |
+|---|---|
+| Identity | Stereo variants, isotopes, charges, fragments, tautomer distinctions, equivalent atom ordering, normalization idempotence |
+| Model adapters | Direct/adapter parity, wrong template vocabulary, duplicate handling, invalid outputs, preserved source records |
+| Route graph | Cycles, shared intermediates, missing precursor branches, duplicate occurrences, unresolved leaves, stocked target |
+| Evidence | Wrong reaction binding, stale checkpoint, source mismatch, forward conflict, missing mapping, retrieval no-match versus error |
+| Infrastructure | Corrupt/partial cache, concurrent identical requests, worker failure, timeout, interrupted export, non-finite score |
+| Optimizations | Reference versus cached/indexed/parallel path; check invalidation and unchanged decisions |
+| Planning | Structurally verified route rate, forward consistency coverage, reference-route recovery, route length, termination reasons |
+| Verification quality | Detection of seeded defects and false rejection on labeled computational cases; explicit denominators |
+
+Every released verified route must pass applicable mandatory structural checks. Test fixtures must include both must-reject corruptions and valid alternatives; a verifier that rejects everything must fail the suite. Unknown/error statuses cannot become passes.
+
+Report raw candidate count, structural outcomes, forward outcomes, precedent coverage, and mapping coverage separately. Reference-route recovery is incomplete ground truth because alternative routes exist. Runtime and model calls are secondary measurements. No aggregate software pass rate becomes a claim of chemical feasibility.
+
+## 12. Delivery order
+
+1. **Integration baseline:** freeze manifests and identity policy; wrap existing models; validate inventory and search behavior. Outputs remain experimental until verification is connected.
+2. **First usable version:** implement every check in Section 6, exact prediction/evidence bindings, the Section 7 forward decision table, Section 8 output decisions, and the Section 9 bundle publication protocol. Verification is not deferred to v2.
+3. **Evidence and efficiency:** add exact public precedent retrieval, persistent caching/indexes, step reuse, stable parallel execution, and optional diversity presentation. Validate each change against the reference.
+4. **Research extensions:** expand adversarial evaluation or investigate learned expansion ordering. A value model may change search order but cannot certify chemistry or bypass verification. It is not a prerequisite for the usable system.
+
+No arbitrary runtime, model-count, or speedup estimate is part of this specification. Freeze numerical experiment parameters before evaluation after measuring the selected models.
+
+## 13. Repository boundaries
+
+| Directory | Responsibility |
+|---|---|
+| adapters/ | Existing models and framework conversions |
+| chemistry/ | Identity policy and chemistry-tool wrappers |
+| verification/ | Route reconstruction and deterministic checks |
+| evidence/ | Forward records, precedent ingestion, indexed lookup |
+| evaluation/ | Frozen experiments, overlap audit, regression cases |
+| reporting/ | Schemas, status aggregation, optional visualization |
+| configs/ | Model/data manifests and run configuration |
+
+Add search_extensions/ or value/ only when such work starts. Do not copy framework internals by default; isolate necessary patches and record their commits.
+
+## 14. Pre-implementation acceptance items
+
+These are explicit unresolved integration facts, not silent implementation assumptions:
+
+- Name and identify both existing checkpoints and the forward model; document their supported inputs and preprocessing.
+- Pin a compatible environment and confirm Syntheseus adapters and RDChiral behavior with those models.
+- Test how the pinned framework handles duplicate precursors, cycles, and route export against the occurrence-tree contract.
+- Choose the public corpus, stock snapshot, permitted evidence partition, and exact-match multiplicity policy.
+- Freeze top-k/beam, forward k, search limits, baseline score, and tie handling in the experiment manifest.
+- Test route-distances format compatibility before making diversity selection part of output.
+
+If a dependency cannot meet a contract, isolate a small adapter or revise the contract explicitly. Do not claim that library adoption alone establishes correctness.
+
+## 15. Audit acceptance cases
+
+In addition to Section 11, require these fixtures before accepting the first usable version:
+
+- Replace a template-free precursor set in the export: prediction binding must fail even if the new molecules parse.
+- Use A → B → A with distinct occurrence IDs: cycle detection must reject it.
+- Give two branches a shared occurrence node: tree-shape validation must reject it; distinct occurrences of the same molecule on separate branches remain allowed.
+- Deduplicate negative-log-cost candidates: choose the lower cost when the adapter declares lower-is-better.
+- Compare opposite specified stereoisomers: forward fail; compare a matching non-stereo structure with one missing stereo assignment: unknown; exact identity: pass.
+- Remove optional auxiliary mapping: preserve the structural verdict and change mapping coverage; corrupt mapping consumed by a mandatory operation: never bypass its failure.
+- Supply a parse failure or inference error: schema accepts the error variant without invented identity/score fields.
+- Discover an identical route through a second template: retain provenance but do not increment distinct route count.
+- Enable caching with a fixed logical-expansion budget: expansion accounting remains unchanged; actual inference executions may decrease.
+- Interrupt bundle writing before publication: no complete verified output is exposed.
+
+## 16. Official references
+
+Sources reviewed during this design discussion. These links are discovery references, not a dependency lockfile. Check code, model-weight, and dataset licenses separately.
+
+- Syntheseus: https://github.com/microsoft/syntheseus
+- Model adapters and caching: https://microsoft.github.io/syntheseus/stable/tutorials/custom_model/
+- RDKit: https://www.rdkit.org/docs/GettingStartedInPython.html
+- RDChiral: https://github.com/connorcoley/rdchiral
+- ReactionUtils: https://molecularai.github.io/reaction_utils/index.html
+- PaRoutes: https://github.com/MolecularAI/PaRoutes
+- route-distances: https://github.com/MolecularAI/route-distances
+- SQLite indexing: https://sqlite.org/queryplanner.html
+- ProcessPoolExecutor: https://docs.python.org/3/library/concurrent.futures.html
+- PyTorch inference mode: https://docs.pytorch.org/docs/stable/generated/torch.autograd.grad_mode.inference_mode.html
+- PyTorch numerical accuracy: https://docs.pytorch.org/docs/stable/notes/numerical_accuracy.html

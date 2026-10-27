@@ -1,0 +1,73 @@
+{
+  "config_ref": "b90fdbe5e75ec40176626ad88c1de40a52586de31b115ab653623dcb219c5804",
+  "error": null,
+  "groups": {
+    "availability": 0,
+    "rejected": 0,
+    "unresolved": 0,
+    "verified_consistent": 2,
+    "verified_other_evidence": 0
+  },
+  "precedent": [
+    {
+      "corpus": "USPTO-50K OpenRetro training / supported records",
+      "corpus_ref": "5abfa92e8deebbc94af45ec4eb74717537a2c9f81f28bef1cc6b400a959c3ae0",
+      "exact_source_ids": [],
+      "match_type": "none",
+      "multiplicity_policy": "occurrences",
+      "partition": "training",
+      "references": {},
+      "status": "pass",
+      "template_source_ids": [],
+      "version": "gitblob:7f5f61c901d637061dc77ab785e570d9c0d14c22;sha256:90e16c7bace48d3ed868eda41188a710ffd8b45ef0a707d17e3af1a8af3e2700"
+    },
+    {
+      "corpus": "USPTO-50K OpenRetro training / supported records",
+      "corpus_ref": "5abfa92e8deebbc94af45ec4eb74717537a2c9f81f28bef1cc6b400a959c3ae0",
+      "exact_source_ids": [
+        "US20050148627A1:train-row-15"
+      ],
+      "match_type": "exact_represented_reaction",
+      "multiplicity_policy": "occurrences",
+      "partition": "training",
+      "references": {
+        "US20050148627A1:train-row-15": "https://patents.google.com/patent/US20050148627A1"
+      },
+      "status": "pass",
+      "template_source_ids": [],
+      "version": "gitblob:7f5f61c901d637061dc77ab785e570d9c0d14c22;sha256:90e16c7bace48d3ed868eda41188a710ffd8b45ef0a707d17e3af1a8af3e2700"
+    },
+    {
+      "corpus": "USPTO-50K OpenRetro training / supported records",
+      "corpus_ref": "5abfa92e8deebbc94af45ec4eb74717537a2c9f81f28bef1cc6b400a959c3ae0",
+      "exact_source_ids": [],
+      "match_type": "none",
+      "multiplicity_policy": "occurrences",
+      "partition": "training",
+      "references": {},
+      "status": "pass",
+      "template_source_ids": [],
+      "version": "gitblob:7f5f61c901d637061dc77ab785e570d9c0d14c22;sha256:90e16c7bace48d3ed868eda41188a710ffd8b45ef0a707d17e3af1a8af3e2700"
+    },
+    {
+      "corpus": "USPTO-50K OpenRetro training / supported records",
+      "corpus_ref": "5abfa92e8deebbc94af45ec4eb74717537a2c9f81f28bef1cc6b400a959c3ae0",
+      "exact_source_ids": [
+        "US20050148627A1:train-row-15"
+      ],
+      "match_type": "exact_represented_reaction",
+      "multiplicity_policy": "occurrences",
+      "partition": "training",
+      "references": {
+        "US20050148627A1:train-row-15": "https://patents.google.com/patent/US20050148627A1"
+      },
+      "status": "pass",
+      "template_source_ids": [],
+      "version": "gitblob:7f5f61c901d637061dc77ab785e570d9c0d14c22;sha256:90e16c7bace48d3ed868eda41188a710ffd8b45ef0a707d17e3af1a8af3e2700"
+    }
+  ],
+  "run_id": "eb2d3ede83fe49469e19ec630b125159",
+  "scope": "Integration with public training corpus; overlap not audited; no chemical accuracy claim",
+  "source_artifacts_in_bundle": 1,
+  "state": "complete"
+}

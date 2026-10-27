@@ -1,0 +1,9 @@
+.git
+.venv
+.cache
+var
+models
+__pycache__
+*.egg-info
+AGENTS.md
+houserules.md

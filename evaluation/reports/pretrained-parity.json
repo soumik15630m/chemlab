@@ -1,0 +1,75 @@
+{
+  "passed": true,
+  "reports": [
+    {
+      "alias": "generator-v1",
+      "cases": [
+        {
+          "artifact_ref": "3e8ecce1608e047265434612b8806db5fc3881163bfc467f5da37d622cbde195",
+          "effective_input": "CCOC(C)=O",
+          "identities": [
+            [
+              "CCOC(C)=O",
+              [
+                "CC(=O)O",
+                "CCO"
+              ]
+            ],
+            [
+              "CCOC(C)=O",
+              [
+                "CC(=O)OC(C)=O",
+                "CCO"
+              ]
+            ],
+            [
+              "CCOC(C)=O",
+              [
+                "C=COC(C)=O"
+              ]
+            ],
+            [
+              "CCOC(C)=O",
+              [
+                "CC(=O)Cl",
+                "CCO"
+              ]
+            ],
+            [
+              "CCOC(C)=O",
+              [
+                "CCO",
+                "CCOC(C)=O"
+              ]
+            ]
+          ],
+          "input": "CCOC(C)=O",
+          "raw_parity": true
+        }
+      ],
+      "manifest_ref": "3a982b0b089229fd451ecc61ee39587850bfde137f8f05c15fd2d68c665356ef",
+      "passed": true
+    },
+    {
+      "alias": "checker-v1",
+      "cases": [
+        {
+          "artifact_ref": "88cc7d143418aa5e8211cd6602a6634d45759cec16b3b3a82525148fed8d8bc6",
+          "effective_input": "CC(=O)O.CCO",
+          "identities": [
+            "CCOC(C)=O",
+            "CCOC(C)O",
+            "CCCCO",
+            "CCCCC",
+            "CCC(C)=O"
+          ],
+          "input": "CC(=O)O.CCO",
+          "raw_parity": true
+        }
+      ],
+      "manifest_ref": "69e49e7e15439cb9523b7f23dc1b7f0b5ac1f89530eaa390a8417e77066178e4",
+      "passed": true
+    }
+  ],
+  "scope": "Direct/provider-boundary parity for one input per pretrained model"
+}

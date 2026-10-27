@@ -1,0 +1,43 @@
+{
+  "actual_inferences": 0,
+  "candidate_routes_found": 2,
+  "config": {
+    "actual_inference_limit": null,
+    "backward_manifest": "3a982b0b089229fd451ecc61ee39587850bfde137f8f05c15fd2d68c665356ef",
+    "corpus_ref": null,
+    "forward_k": 5,
+    "forward_manifest": "69e49e7e15439cb9523b7f23dc1b7f0b5ac1f89530eaa390a8417e77066178e4",
+    "full_diagnostics": false,
+    "logical_expansion_limit": 4,
+    "mapping_profile": "auxiliary",
+    "max_depth": 4,
+    "prediction_count": 10,
+    "route_limit": 2,
+    "schema_version": 1,
+    "seed": 0,
+    "stock_ref": "da881da157db588f50516eb986c678b592d584b59cf850838f50124c180633b8",
+    "time_limit_seconds": null
+  },
+  "error": null,
+  "groups": {
+    "availability": 0,
+    "rejected": 0,
+    "unresolved": 0,
+    "verified_consistent": 2,
+    "verified_other_evidence": 0
+  },
+  "logical_expansions": 2,
+  "run_id": "ba373d38475845b89fea8877bdb765fc",
+  "scope": "Real-model pipeline integration only; not a chemical feasibility benchmark",
+  "search_error": null,
+  "software": {
+    "fastapi": "0.162.0",
+    "pydantic": "2.14.1",
+    "python": "3.11.17",
+    "rdchiral": "1.1.0",
+    "rdkit": "2026.9.1",
+    "syntheseus": "0.9.0"
+  },
+  "state": "complete",
+  "termination": "requested_route_count_reached"
+}

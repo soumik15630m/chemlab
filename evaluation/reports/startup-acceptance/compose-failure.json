@@ -1,0 +1,8 @@
+{
+  "application_state": "created",
+  "scope": "Injected setup exit 17; app must never start",
+  "passed": true,
+  "application_started": false,
+  "compose_exit": 1,
+  "setup_exit": 17
+}

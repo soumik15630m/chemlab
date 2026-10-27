@@ -1,0 +1,77 @@
+{
+  "baseline_passed": true,
+  "mutants": [
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M10-public-source-integrity",
+      "setup_errors": 0,
+      "test": "tests/test_ingestion.py::test_source_blob_mismatch_is_rejected"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M09-tokenizer-admission",
+      "setup_errors": 0,
+      "test": "tests/test_plugins.py::test_tokenizer_cannot_silently_lose_input_information"
+    },
+    {
+      "assertion_failures": 4,
+      "detected": true,
+      "name": "M01-stereo-preservation",
+      "setup_errors": 0,
+      "test": "tests/test_identity.py::test_identity_contract"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M02-ancestor-recurrence",
+      "setup_errors": 0,
+      "test": "tests/test_verification.py::test_molecular_cycle_with_fresh_occurrences"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M03-precursor-completeness",
+      "setup_errors": 0,
+      "test": "tests/test_verification.py::test_export_corruptions_are_rejected[drop_precursor]"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M04-score-direction",
+      "setup_errors": 0,
+      "test": "tests/test_adapters.py::test_lower_cost_duplicate_wins"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M05-fail-precedence",
+      "setup_errors": 0,
+      "test": "tests/test_verification.py::test_fail_dominates_unknown"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M06-cache-integrity",
+      "setup_errors": 0,
+      "test": "tests/test_infrastructure.py::test_corrupt_artifact_is_never_a_cache_hit"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M07-expansion-accounting",
+      "setup_errors": 0,
+      "test": "tests/test_adapters.py::test_cache_preserves_logical_attempts"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M08-report-binding",
+      "setup_errors": 0,
+      "test": "tests/test_infrastructure.py::test_report_for_another_route_cannot_publish"
+    }
+  ],
+  "passed": true,
+  "scope": "Ten named behavioral mutants; no claim of exhaustive mutation coverage"
+}

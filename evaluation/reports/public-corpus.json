@@ -1,0 +1,11 @@
+{
+  "accepted_records": 40008,
+  "audit_ref": "a1fe4f83ee8188d6e5b210985d1771a29c38f6ac380d7707839d585062cb85fc",
+  "corpus_ref": "5abfa92e8deebbc94af45ec4eb74717537a2c9f81f28bef1cc6b400a959c3ae0",
+  "input_records": 40008,
+  "license": "OpenRetro repository MIT; underlying dataset license not separately specified",
+  "limitations": "https://github.com/coleygroup/openretro/blob/main/data/USPTO_50k/raw/raw_train.csv; training split only; model/PaRoutes overlap not audited",
+  "quarantined_count": 0,
+  "source_ref": "0cf89346be8a1e3353718e300e6ac1d03fd310f919a386a29974136c9303e0f2",
+  "version": "gitblob:7f5f61c901d637061dc77ab785e570d9c0d14c22;sha256:90e16c7bace48d3ed868eda41188a710ffd8b45ef0a707d17e3af1a8af3e2700"
+}
