@@ -3,7 +3,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 PIP_DISABLE_PIP_VERSION_CHECK=1
 RUN apt-get update && apt-get install -y --no-install-recommends libxrender1 libxext6 libgomp1 libexpat1 libfreetype6 fonts-dejavu-core \
     && rm -rf /var/lib/apt/lists/*
 WORKDIR /workspace
-COPY pyproject.toml ./
+COPY pyproject.toml LICENSE CITATION.md ./
 COPY requirements.lock ./
 COPY chemlab ./chemlab
 RUN pip install --no-cache-dir -c requirements.lock .

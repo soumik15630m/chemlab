@@ -274,3 +274,12 @@ Training overlap with a future evaluation dataset must be audited/disclosed.
 The current specification is `ARCHITECTURE.md`, together with the unchanged
 identity, status and verification contracts in the original architecture document.
 Research experiments and limitations are recorded in `RESEARCH.md`.
+
+## License and citation
+
+Copyright 2026 soumik15630m. ChemLab's original source and documentation are
+licensed under the [Apache License 2.0](LICENSE). Third-party software, models and
+datasets retain their own terms; see [artifact sources](docs/artifact-sources.md).
+
+For research use, see [CITATION.md](CITATION.md) and record the exact Git commit
+alongside the model, data and execution settings used.
