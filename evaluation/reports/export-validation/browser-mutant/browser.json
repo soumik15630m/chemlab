@@ -1,0 +1,7 @@
+{
+  "passed": false,
+  "javascript_errors": [],
+  "mode": "molecule",
+  "failure_kind": "TimeoutError",
+  "error": "Timeout 5000ms exceeded while waiting for event \"download\"\n=========================== logs ===========================\nwaiting for event \"download\"\n============================================================"
+}

@@ -4,6 +4,9 @@
 /.venv-*/
 /.cache/
 /var/
+/output/
+/tmp/
+/artifacts/*.partial
 /models/*.partial
 /models/*-extracting/
 __pycache__/

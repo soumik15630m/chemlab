@@ -13,6 +13,27 @@ from pathlib import Path
 
 MUTATIONS = [
     (
+        "M17-mol-stereochemistry",
+        "chemlab/reporting/formats.py",
+        "block = Chem.MolToV3KMolBlock(mol)",
+        "Chem.RemoveStereochemistry(mol)\n    block = Chem.MolToV3KMolBlock(mol)",
+        "tests/test_exports.py::test_mol_roundtrip_preserves_declared_identity",
+    ),
+    (
+        "M18-reaction-export-direction",
+        "chemlab/reporting/formats.py",
+        "reaction.AddProductTemplate(depiction_molecule(molecules[step.product_id]))",
+        "reaction.AddReactantTemplate(depiction_molecule(molecules[step.product_id]))",
+        "tests/test_exports.py::test_reaction_export_keeps_forward_direction_multiplicity_and_fragments",
+    ),
+    (
+        "M19-pdf-fixture-disclosure",
+        "chemlab/reporting/pdf.py",
+        'if run.get("experimental"):',
+        "if False:",
+        "tests/test_exports.py::test_pdf_keeps_evidence_scope_and_fixture_warning",
+    ),
+    (
         "M15-snapshot-byte-preservation",
         "chemlab/distribution.py",
         "shutil.copyfileobj(input_file, output)",
@@ -208,7 +229,7 @@ def run() -> dict:
         "baseline_passed": True,
         "mutants": results,
         "passed": all(r["detected"] for r in results),
-        "scope": "Sixteen named behavioral mutants; no claim of exhaustive mutation coverage",
+        "scope": "Nineteen named behavioral mutants; no claim of exhaustive mutation coverage",
     }
 
 

@@ -165,6 +165,24 @@ The snapshot is historical computational evidence, not a new chemical validation
 or a portable cache for arbitrary model versions/platforms. New runtime activity
 remains local; it does not modify the committed download.
 
+## Download your results
+
+Enter the target as SMILES, including any specified stereochemistry, isotopes,
+charge and disconnected fragments. The target preview and molecule cards offer
+a PDF structure sheet and an editable MOL V3000 file.
+
+After a search completes, download its PDF report for reaction schemes, evidence
+statuses and source references. Each structurally verified route also offers an
+editable chemistry ZIP containing MOL/SDF structures, RXN reaction files,
+molecular/reaction SMILES, SVG schemes and the original JSON records. These are
+exchange formats for chemistry editors; see [format details](docs/export-formats.md)
+for vendor documentation and the tested compatibility boundary. Coordinates are
+2D depictions; no conditions, procedures or optimized 3D geometries are invented.
+
+The complete evidence bundle remains available for independent replay, including
+rejected and unresolved diagnostics. Editing a downloaded structure or reaction
+does not preserve its verification status automatically.
+
 ## CLI
 
 Run CLI commands in the configured environment:
@@ -218,9 +236,13 @@ experiment exhaustively compares 1,572 cases with a separately formulated graph
 oracle. Mutation experiments require assertion failures rather than import/setup
 errors. These are scoped software checks, not proof of chemical feasibility.
 
-The current acceptance suite passes 111 tests and detects 16 named mutations;
-lint, formatting and type checks also pass. The current distribution suite is
-under `evaluation/reports/lfs-distribution/`. Earlier startup evidence is under
+The current acceptance suite passes 126 tests and detects 19 named mutations;
+lint, formatting and type checks also pass. Export validation and real browser
+download checks are under `evaluation/reports/export-validation/`. Distribution
+checks are under `evaluation/reports/lfs-distribution/`. The packaged export image
+is checked separately under `evaluation/reports/export-image-validation/`, with
+its cached dependency provenance and pinned versions recorded explicitly.
+Earlier startup evidence is under
 `evaluation/reports/startup-acceptance/`, with the built-image suite under
 `evaluation/reports/startup-image-acceptance/`. A fresh isolated Linux venv
 completed real pretrained route generation and verification. Compose passed

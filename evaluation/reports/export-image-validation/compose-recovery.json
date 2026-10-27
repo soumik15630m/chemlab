@@ -1,0 +1,15 @@
+{
+  "complete_bundles_validated": 7,
+  "health": {
+    "identity": "identity-v1",
+    "planner": "Syntheseus Retro*",
+    "status": "ok"
+  },
+  "passed": true,
+  "pdf_sha256": "46a412227cbb1d4ce8e22bdd32fe9e12a2bcb9d1045e68c779011eac36a5b30d",
+  "preserved_runs": {
+    "complete": 7
+  },
+  "reviewed_pdf_matches_deployed_download": true,
+  "scope": "Recovered packaged application and saved evidence; no fresh neural inference claim"
+}

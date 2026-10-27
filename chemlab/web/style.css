@@ -2,3 +2,4 @@
 .workspace > * { min-width: 0; }
 .result-title { overflow-wrap: anywhere; }
 .run-link:hover { background: #d5e2d5; }
+.download-actions {display:flex;flex-wrap:wrap;gap:8px 16px;margin:10px 0;font-size:12px;}.molecule-card .download-actions {padding:0 12px;}

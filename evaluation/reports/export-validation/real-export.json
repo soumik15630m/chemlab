@@ -1,0 +1,23 @@
+{
+  "chemistry_files": [
+    "molecules.sdf",
+    "molecules.smi",
+    "molecules/molecule-0001.mol",
+    "molecules/molecule-0002.mol",
+    "molecules/molecule-0003.mol",
+    "molecules/molecule-0004.mol",
+    "molecules/molecule-0005.mol",
+    "reactions.smi",
+    "reactions/step-0001.rxn",
+    "reactions/step-0001.svg",
+    "reactions/step-0002.rxn",
+    "reactions/step-0002.svg",
+    "route.json",
+    "verification-report.json"
+  ],
+  "pages": 5,
+  "passed": true,
+  "pdf_deterministic": true,
+  "run_id": "eb2d3ede83fe49469e19ec630b125159",
+  "scope": "RDKit reimport and real saved evidence; no vendor application or chemical feasibility claim"
+}

@@ -138,6 +138,67 @@ def create_app(root: Path | str = "var") -> FastAPI:
             headers={"Content-Disposition": f'attachment; filename="chemlab-{run_id}.zip"'},
         )
 
+    def completed_bundle(run_id: str):
+        row = get_run(run_id)
+        if row["state"] != "complete":
+            raise HTTPException(409, "Run has no complete published output")
+        return row["result"]
+
+    @app.get("/api/runs/{run_id}/report.pdf")
+    def pdf_report(run_id: str):
+        from chemlab.reporting.pdf import report_pdf
+
+        data = report_pdf(completed_bundle(run_id))
+        return Response(
+            data,
+            media_type="application/pdf",
+            headers={
+                "Content-Disposition": f'attachment; filename="chemlab-{run_id}.pdf"',
+            },
+        )
+
+    @app.get("/api/runs/{run_id}/routes/{route_ref}/chemistry.zip")
+    def chemistry_files(run_id: str, route_ref: str):
+        from chemlab.reporting.formats import chemistry_zip
+
+        try:
+            data = chemistry_zip(completed_bundle(run_id), route_ref)
+        except KeyError as exc:
+            raise HTTPException(404, "Route is not part of this run") from exc
+        return Response(
+            data,
+            media_type="application/zip",
+            headers={
+                "Content-Disposition": (
+                    f'attachment; filename="chemlab-{run_id}-{route_ref[:12]}-chemistry.zip"'
+                ),
+            },
+        )
+
+    @app.get("/api/molecule.mol")
+    def mol_file(smiles: Annotated[str, Query(min_length=1, max_length=4096)]):
+        from chemlab.reporting.formats import molecule_mol
+
+        return Response(
+            molecule_mol(smiles),
+            media_type="chemical/x-mdl-molfile",
+            headers={
+                "Content-Disposition": 'attachment; filename="molecule.mol"',
+            },
+        )
+
+    @app.get("/api/molecule.pdf")
+    def molecule_report(smiles: Annotated[str, Query(min_length=1, max_length=4096)]):
+        from chemlab.reporting.pdf import molecule_pdf
+
+        return Response(
+            molecule_pdf(smiles),
+            media_type="application/pdf",
+            headers={
+                "Content-Disposition": 'attachment; filename="molecule.pdf"',
+            },
+        )
+
     @app.post("/api/stocks", status_code=201)
     def stock(body: StockRequest):
         ref = import_stock(store, list(body.smiles), body.alias, body.source, body.license)

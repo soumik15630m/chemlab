@@ -1,0 +1,28 @@
+{
+  "browser_download_baseline": {
+    "javascript_errors": [],
+    "mode": "full",
+    "passed": true
+  },
+  "limitations": "No proprietary chemistry application or experimental chemistry validation",
+  "passed": true,
+  "sha256": {
+    "chemlab/web/app.js": "871c6f6138473c4d0700ef3a7412cb5dc735dc984367513d294bbaec0c0b11af",
+    "chemlab/web/style.css": "56878930065d4ddac4969c97c59b00a6e56b6068c6c6e07899d50c960cfb73f2",
+    "output/pdf/chemlab-synthesis-report.pdf": "46a412227cbb1d4ce8e22bdd32fe9e12a2bcb9d1045e68c779011eac36a5b30d",
+    "scripts/export_browser_smoke.py": "9d5da7f8a9f8373afc7f5c1481edb44c61b9f3784ba9e2e62700aad7a30decc5"
+  },
+  "ui_mutation": {
+    "detected": true,
+    "failure_kind": "TimeoutError",
+    "javascript_errors": [],
+    "name": "PDF link points to non-download SVG endpoint",
+    "scope": "One browser download defect; separate from 19 Python mutations"
+  },
+  "visual_review": {
+    "all_final_pages_reviewed": true,
+    "desktop_and_mobile_reviewed": true,
+    "pdf_pages": 5,
+    "result": "No clipped text, overlapping elements or unreadable structure labels"
+  }
+}

@@ -174,11 +174,11 @@ This is UI validation, not a chemistry research result.
 
 ## Current acceptance result
 
-111 pytest cases pass, including the bounded graph experiment. Ruff checking and
-format checking pass; mypy passes for all 25 engine source files. Sixteen named
+126 pytest cases pass, including the bounded graph experiment. Ruff checking and
+format checking pass; mypy passes for all 27 engine source files. Nineteen named
 behavioral mutations are detected. The test client emits one upstream deprecation
 warning; no test or check is bypassed for it. Exact versions and source hashes are
-recorded in `evaluation/reports/lfs-distribution/validation.json`. The earlier
+recorded in `evaluation/reports/export-validation/validation.json`. The earlier
 release acceptance reports retain their original source hashes and counts.
 
 The default public corpus contains 40,008 OpenRetro USPTO-50K training reactions.
@@ -213,6 +213,28 @@ benchmark result. These records document reported reactions, not guaranteed
 experimental success.
 
 ## Evidence policy
+
+The chemistry exports add representation and reporting checks, not new chemical
+evidence. MOL/SDF and RXN/reaction-SMILES files are reimported with the pinned
+RDKit; full identities, participant multiplicities and direction must survive.
+Repeated occurrences remain distinct. Fixed PDF metadata and ZIP timestamps
+make repeated downloads byte-identical in the pinned runtime. Named mutants
+M17-M19 remove stereo, reverse reaction direction and hide fixture disclosure;
+the contract tests detect all three. The real saved run exports two routes and
+retains its exact public precedent citation. Report layout is reviewed from
+rendered pages. Chromium exercises attachment bytes and desktop/mobile controls;
+this caught and corrected a blur/change event that replaced a clicked link.
+An additional browser mutation points the PDF control at the SVG endpoint; the
+download test rejects it without a JavaScript/setup error. This is separate from
+the nineteen Python mutants. Evidence is under
+`evaluation/reports/export-validation/`. The packaged image is tested without a
+working-tree mount under `evaluation/reports/export-image-validation/`. Recovery
+reuses cached dependencies after checking all 84 pinned versions and `pip check`;
+the slow fresh network build was cancelled and is not claimed as completed.
+ChemDraw and Marvin
+have not been executed: interoperability claims are limited to documented
+exchange-format support and RDKit roundtrips. No experimental feasibility,
+reaction conditions or optimized 3D geometries are claimed.
 
 The LFS distribution adds operational snapshot checks, not a chemistry result.
 The frozen archive contains 39 registered artifacts and seven complete runs.

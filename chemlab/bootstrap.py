@@ -21,6 +21,8 @@ def runtime_environment(root: Path) -> dict[str, str]:
         "OMP_NUM_THREADS": os.environ.get("OMP_NUM_THREADS", "2"),
         "MKL_NUM_THREADS": os.environ.get("MKL_NUM_THREADS", "2"),
         "WANDB_MODE": "disabled",
+        "PIP_DEFAULT_TIMEOUT": os.environ.get("PIP_DEFAULT_TIMEOUT", "120"),
+        "PIP_RETRIES": os.environ.get("PIP_RETRIES", "10"),
     }
 
 
