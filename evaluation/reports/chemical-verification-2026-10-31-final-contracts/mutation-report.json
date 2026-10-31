@@ -1,0 +1,336 @@
+{
+  "baseline_passed": true,
+  "mutants": [
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M46-index-copy-publication",
+      "setup_errors": 0,
+      "test": "tests/test_reaction_library.py::test_corrupt_copy_source_cannot_publish_a_completion_marker"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M47-chemical-job-policy-binding",
+      "setup_errors": 0,
+      "test": "tests/test_chemical_service.py::test_policy_change_after_submission_cannot_publish_a_completed_job"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M45-hydrogen-isotope-provenance",
+      "setup_errors": 0,
+      "test": "tests/test_chemical_checks.py::test_listed_atom_obligation_has_positive_negative_and_unknown_controls"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M44-chemical-export-precursor-multiplicity",
+      "setup_errors": 0,
+      "test": "tests/test_chemical_service.py::test_evidence_pdf_and_editable_files_keep_bindings_and_uncertainty"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M34-patent-source-integrity",
+      "setup_errors": 0,
+      "test": "tests/test_reaction_library.py::test_unsupported_and_broken_sources_remain_quarantined"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M35-reaction-occurrence-identity",
+      "setup_errors": 0,
+      "test": "tests/test_reaction_library.py::test_lookup_exact_identity_occurrences_and_duplicate_provenance"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M36-exact-template-replay",
+      "setup_errors": 0,
+      "test": "tests/test_reaction_templates.py::test_public_extractor_and_replay_are_bound_to_precursor_identity"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M37-mapping-proposal-binding",
+      "setup_errors": 0,
+      "test": "tests/test_chemical_checks.py::test_misbound_element_incompatible_partial_and_error_maps_cannot_supply_edits"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M38-atom-origin-obligation",
+      "setup_errors": 0,
+      "test": "tests/test_chemical_checks.py::test_listed_atom_obligation_has_positive_negative_and_unknown_controls"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M39-human-reference-conflicts",
+      "setup_errors": 0,
+      "test": "tests/test_chemical_reference.py::test_duplicate_conflicts_and_denominators_are_not_silent_truth"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M40-batch-end-integrity",
+      "setup_errors": 0,
+      "test": "tests/test_reaction_templates.py::test_batch_does_not_return_a_publishable_success_after_source_changes"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M41-reference-source-checksum",
+      "setup_errors": 0,
+      "test": "tests/test_chemical_reference.py::test_reference_source_and_result_bindings_are_checked"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M42-final-source-template-firewall",
+      "setup_errors": 0,
+      "test": "tests/test_reaction_templates.py::test_source_context_support_keeps_scope_and_excludes_final_sources"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M43-chemical-export-binding",
+      "setup_errors": 0,
+      "test": "tests/test_chemical_service.py::test_evidence_pdf_and_editable_files_keep_bindings_and_uncertainty"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M33-stock-identity-stability",
+      "setup_errors": 0,
+      "test": "tests/test_stock_sources.py::test_actual_ursa_stereo_identity_cycle_is_quarantined_without_rewriting"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M32-stock-download-integrity",
+      "setup_errors": 0,
+      "test": "tests/test_stock_sources.py::test_failed_download_does_not_publish_a_completed_source"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M26-stock-source-checksum",
+      "setup_errors": 0,
+      "test": "tests/test_stock_sources.py::test_pinned_source_mismatch_row_count_and_card_are_rejected"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M27-stock-union-completeness",
+      "setup_errors": 0,
+      "test": "tests/test_stock_sources.py::test_union_is_exact_order_independent_and_retains_component_terms"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M28-stock-fragment-preservation",
+      "setup_errors": 0,
+      "test": "tests/test_stock_sources.py::test_csv_import_keeps_full_identity_and_duplicate_source_records"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M29-legacy-stock-encoding",
+      "setup_errors": 0,
+      "test": "tests/test_stock_sources.py::test_legacy_stock_encoding_and_alias_are_unchanged"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M30-stock-source-bundle-closure",
+      "setup_errors": 0,
+      "test": "tests/test_stock_sources.py::test_stock_sources_and_union_components_are_in_complete_bundles"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M31-stock-source-id-uniqueness",
+      "setup_errors": 0,
+      "test": "tests/test_stock_sources.py::test_malformed_or_key_only_stocks_are_not_admitted"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M25-precedent-product-specificity",
+      "setup_errors": 0,
+      "test": "tests/test_evidence.py::test_precedent_cannot_transfer_from_a_carbonyl_analog_to_the_requested_product"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M24-observation-prediction-integrity",
+      "setup_errors": 0,
+      "test": "tests/test_reaction_diagnostics.py::test_diagnostics_require_original_prediction_hash_even_when_chemistry_is_unchanged"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M20-diagnostic-occurrence-counts",
+      "setup_errors": 0,
+      "test": "tests/test_reaction_diagnostics.py::test_atom_inventory_keeps_occurrences_isotopes_and_omitted_reagent_limits"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M21-mapping-input-binding",
+      "setup_errors": 0,
+      "test": "tests/test_reaction_diagnostics.py::test_invalid_or_inapplicable_mapping_never_supplies_edits"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M22-tautomer-enumeration-completeness",
+      "setup_errors": 0,
+      "test": "tests/test_reaction_diagnostics.py::test_tautomer_diagnostic_preserves_rank_identity_and_complete_enumeration"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M23-chemical-overclaim",
+      "setup_errors": 0,
+      "test": "tests/test_reaction_diagnostics.py::test_observations_endpoint_is_bound_read_only_and_preserves_positive_route"
+    },
+    {
+      "assertion_failures": 5,
+      "detected": true,
+      "name": "M17-mol-stereochemistry",
+      "setup_errors": 0,
+      "test": "tests/test_exports.py::test_mol_roundtrip_preserves_declared_identity"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M18-reaction-export-direction",
+      "setup_errors": 0,
+      "test": "tests/test_exports.py::test_reaction_export_keeps_forward_direction_multiplicity_and_fragments"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M19-pdf-fixture-disclosure",
+      "setup_errors": 0,
+      "test": "tests/test_exports.py::test_pdf_keeps_evidence_scope_and_fixture_warning"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M15-snapshot-byte-preservation",
+      "setup_errors": 0,
+      "test": "tests/test_distribution.py::test_snapshot_restores_registry_objects_and_complete_bundles"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M16-lfs-materialization-gate",
+      "setup_errors": 0,
+      "test": "tests/test_distribution.py::test_lfs_pointer_is_not_a_model_checkpoint"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M14-compose-initialization-gate",
+      "setup_errors": 0,
+      "test": "tests/test_bootstrap.py::test_compose_initialization_gate_and_persistent_mounts"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M13-bootstrap-failure-propagation",
+      "setup_errors": 0,
+      "test": "tests/test_bootstrap.py::test_download_failure_blocks_registration"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M11-venv-isolation",
+      "setup_errors": 0,
+      "test": "tests/test_bootstrap.py::test_native_installs_and_runs_only_selected_virtual_interpreter"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M12-setup-only-no-server",
+      "setup_errors": 0,
+      "test": "tests/test_bootstrap.py::test_prepare_only_has_no_server_side_effect"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M10-public-source-integrity",
+      "setup_errors": 0,
+      "test": "tests/test_ingestion.py::test_source_blob_mismatch_is_rejected"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M09-tokenizer-admission",
+      "setup_errors": 0,
+      "test": "tests/test_plugins.py::test_tokenizer_cannot_silently_lose_input_information"
+    },
+    {
+      "assertion_failures": 4,
+      "detected": true,
+      "name": "M01-stereo-preservation",
+      "setup_errors": 0,
+      "test": "tests/test_identity.py::test_identity_contract"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M02-ancestor-recurrence",
+      "setup_errors": 0,
+      "test": "tests/test_verification.py::test_molecular_cycle_with_fresh_occurrences"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M03-precursor-completeness",
+      "setup_errors": 0,
+      "test": "tests/test_verification.py::test_export_corruptions_are_rejected[drop_precursor]"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M04-score-direction",
+      "setup_errors": 0,
+      "test": "tests/test_adapters.py::test_lower_cost_duplicate_wins"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M05-fail-precedence",
+      "setup_errors": 0,
+      "test": "tests/test_verification.py::test_fail_dominates_unknown"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M06-cache-integrity",
+      "setup_errors": 0,
+      "test": "tests/test_infrastructure.py::test_corrupt_artifact_is_never_a_cache_hit"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M07-expansion-accounting",
+      "setup_errors": 0,
+      "test": "tests/test_adapters.py::test_cache_preserves_logical_attempts"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M08-report-binding",
+      "setup_errors": 0,
+      "test": "tests/test_infrastructure.py::test_report_for_another_route_cannot_publish"
+    }
+  ],
+  "passed": true,
+  "scope": "47 named behavioral mutants; no exhaustive coverage claim"
+}

@@ -79,6 +79,14 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--store", type=Path, default=Path("var"))
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("list")
+    knowledge = commands.add_parser("register-reaction-knowledge")
+    knowledge.add_argument("alias")
+    knowledge.add_argument("file", type=Path)
+    chemical = commands.add_parser("check-reaction")
+    chemical.add_argument("reaction_smiles")
+    chemical.add_argument("--knowledge")
+    chemical_replay = commands.add_parser("replay-chemical-check")
+    chemical_replay.add_argument("job_id")
     register = commands.add_parser("register-model")
     register.add_argument("alias")
     register.add_argument("manifest", type=Path)
@@ -87,6 +95,9 @@ def main(argv: list[str] | None = None) -> int:
     stock.add_argument("file", type=Path)
     stock.add_argument("--source", required=True)
     stock.add_argument("--license", required=True)
+    merge = commands.add_parser("merge-stocks")
+    merge.add_argument("alias")
+    merge.add_argument("stocks", nargs="+")
     corpus = commands.add_parser("import-corpus")
     corpus.add_argument("alias")
     corpus.add_argument("file", type=Path)
@@ -120,6 +131,23 @@ def main(argv: list[str] | None = None) -> int:
     result: Any = None
     if args.command == "list":
         result = registry.list()
+    elif args.command == "register-reaction-knowledge":
+        from chemlab.evidence.chemical_service import KnowledgeConfig, register_knowledge
+
+        knowledge_config = KnowledgeConfig.model_validate_json(args.file.read_bytes())
+        result = {"ref": register_knowledge(store, args.alias, knowledge_config)}
+    elif args.command == "check-reaction":
+        from chemlab.evidence.chemical_service import ChemicalService, parse_reaction
+
+        service = ChemicalService(store)
+        ref = registry.resolve(args.knowledge, "reaction_knowledge") if args.knowledge else None
+        job_id = service.prepare([parse_reaction(args.reaction_smiles)], ref)
+        service.execute(job_id)
+        result = service.job(job_id)
+    elif args.command == "replay-chemical-check":
+        from chemlab.evidence.chemical_service import ChemicalService
+
+        result = ChemicalService(store).replay(args.job_id)
     elif args.command == "register-model":
         result = {"ref": registry.register_model(args.alias, load_manifest(args.manifest))}
     elif args.command == "import-stock":
@@ -132,6 +160,10 @@ def main(argv: list[str] | None = None) -> int:
         )
         registry.register(args.alias, "stock", ref)
         result = {"ref": ref}
+    elif args.command == "merge-stocks":
+        from chemlab.evidence.stock_sources import merge_stocks
+
+        result = merge_stocks(store, args.stocks, args.alias)
     elif args.command == "import-corpus":
         record = Corpus.model_validate_json(args.file.read_text(encoding="utf-8"))
         ids = [r.source_id for r in record.records]
@@ -201,7 +233,9 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     print(canonical_bytes(result).decode("ascii"))
     if isinstance(result, dict) and (
-        result.get("state") == "error" or result.get("passed") is False
+        result.get("state") == "error"
+        or result.get("passed") is False
+        or result.get("equivalent") is False
     ):
         return 1
     return 0

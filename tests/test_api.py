@@ -53,3 +53,24 @@ def test_api_rejects_bad_inputs_and_cross_origin_writes(tmp_path):
             ).status_code
             == 400
         )
+
+
+def test_unstable_stereo_input_cannot_be_depicted_or_saved_as_an_admitted_stock(tmp_path):
+    original = "O[C@H]1C2OC3OC1[C@@H](O)[C@H](O3)[C@@H]2O"
+    with TestClient(create_app(tmp_path / "store")) as client:
+        for endpoint in ("/api/molecule.svg", "/api/molecule.mol", "/api/molecule.pdf"):
+            response = client.get(endpoint, params={"smiles": original})
+            assert response.status_code == 400
+            assert "not_idempotent" in response.json()["detail"]
+        assert (
+            client.post(
+                "/api/stocks",
+                json={
+                    "alias": "bad-cycle",
+                    "smiles": [original],
+                    "source": "contract fixture",
+                    "license": "test",
+                },
+            ).status_code
+            == 400
+        )

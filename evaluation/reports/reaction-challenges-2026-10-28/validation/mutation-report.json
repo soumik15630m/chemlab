@@ -1,0 +1,175 @@
+{
+  "baseline_passed": true,
+  "mutants": [
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M24-observation-prediction-integrity",
+      "setup_errors": 0,
+      "test": "tests/test_reaction_diagnostics.py::test_diagnostics_require_original_prediction_hash_even_when_chemistry_is_unchanged"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M20-diagnostic-occurrence-counts",
+      "setup_errors": 0,
+      "test": "tests/test_reaction_diagnostics.py::test_atom_inventory_keeps_occurrences_isotopes_and_omitted_reagent_limits"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M21-mapping-input-binding",
+      "setup_errors": 0,
+      "test": "tests/test_reaction_diagnostics.py::test_invalid_or_inapplicable_mapping_never_supplies_edits"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M22-tautomer-enumeration-completeness",
+      "setup_errors": 0,
+      "test": "tests/test_reaction_diagnostics.py::test_tautomer_diagnostic_preserves_rank_identity_and_complete_enumeration"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M23-chemical-overclaim",
+      "setup_errors": 0,
+      "test": "tests/test_reaction_diagnostics.py::test_observations_endpoint_is_bound_read_only_and_preserves_positive_route"
+    },
+    {
+      "assertion_failures": 5,
+      "detected": true,
+      "name": "M17-mol-stereochemistry",
+      "setup_errors": 0,
+      "test": "tests/test_exports.py::test_mol_roundtrip_preserves_declared_identity"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M18-reaction-export-direction",
+      "setup_errors": 0,
+      "test": "tests/test_exports.py::test_reaction_export_keeps_forward_direction_multiplicity_and_fragments"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M19-pdf-fixture-disclosure",
+      "setup_errors": 0,
+      "test": "tests/test_exports.py::test_pdf_keeps_evidence_scope_and_fixture_warning"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M15-snapshot-byte-preservation",
+      "setup_errors": 0,
+      "test": "tests/test_distribution.py::test_snapshot_restores_registry_objects_and_complete_bundles"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M16-lfs-materialization-gate",
+      "setup_errors": 0,
+      "test": "tests/test_distribution.py::test_lfs_pointer_is_not_a_model_checkpoint"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M14-compose-initialization-gate",
+      "setup_errors": 0,
+      "test": "tests/test_bootstrap.py::test_compose_initialization_gate_and_persistent_mounts"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M13-bootstrap-failure-propagation",
+      "setup_errors": 0,
+      "test": "tests/test_bootstrap.py::test_download_failure_blocks_registration"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M11-venv-isolation",
+      "setup_errors": 0,
+      "test": "tests/test_bootstrap.py::test_native_installs_and_runs_only_selected_virtual_interpreter"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M12-setup-only-no-server",
+      "setup_errors": 0,
+      "test": "tests/test_bootstrap.py::test_prepare_only_has_no_server_side_effect"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M10-public-source-integrity",
+      "setup_errors": 0,
+      "test": "tests/test_ingestion.py::test_source_blob_mismatch_is_rejected"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M09-tokenizer-admission",
+      "setup_errors": 0,
+      "test": "tests/test_plugins.py::test_tokenizer_cannot_silently_lose_input_information"
+    },
+    {
+      "assertion_failures": 4,
+      "detected": true,
+      "name": "M01-stereo-preservation",
+      "setup_errors": 0,
+      "test": "tests/test_identity.py::test_identity_contract"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M02-ancestor-recurrence",
+      "setup_errors": 0,
+      "test": "tests/test_verification.py::test_molecular_cycle_with_fresh_occurrences"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M03-precursor-completeness",
+      "setup_errors": 0,
+      "test": "tests/test_verification.py::test_export_corruptions_are_rejected[drop_precursor]"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M04-score-direction",
+      "setup_errors": 0,
+      "test": "tests/test_adapters.py::test_lower_cost_duplicate_wins"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M05-fail-precedence",
+      "setup_errors": 0,
+      "test": "tests/test_verification.py::test_fail_dominates_unknown"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M06-cache-integrity",
+      "setup_errors": 0,
+      "test": "tests/test_infrastructure.py::test_corrupt_artifact_is_never_a_cache_hit"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M07-expansion-accounting",
+      "setup_errors": 0,
+      "test": "tests/test_adapters.py::test_cache_preserves_logical_attempts"
+    },
+    {
+      "assertion_failures": 1,
+      "detected": true,
+      "name": "M08-report-binding",
+      "setup_errors": 0,
+      "test": "tests/test_infrastructure.py::test_report_for_another_route_cannot_publish"
+    }
+  ],
+  "passed": true,
+  "scope": "24 named behavioral mutants; no exhaustive coverage claim"
+}

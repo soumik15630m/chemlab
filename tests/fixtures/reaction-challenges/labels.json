@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "partition": "development",
+  "label_source": "User route-level verdicts supplied on 2026-10-28",
+  "label_scope": "Complete routes only; no individual step labels inferred",
+  "reports": {
+    "470792e991c24516ac93beda4c2fd67a": {
+      "1": "correct",
+      "2": "unlabelled",
+      "3": "correct",
+      "4": "unlabelled",
+      "5": "correct"
+    },
+    "7b270a4b59074c3781e5b2cd44a1d8d3": {
+      "1": "incorrect",
+      "2": "incorrect",
+      "3": "incorrect",
+      "4": "incorrect",
+      "5": "incorrect"
+    },
+    "c403c0ac85714302a10bc322929da630": {
+      "1": "incorrect",
+      "2": "incorrect",
+      "3": "incorrect",
+      "4": "incorrect"
+    }
+  }
+}

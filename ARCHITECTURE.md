@@ -9,7 +9,8 @@ Where scope differs, this revision takes precedence.
 
 Input: a target molecule. Output: multiple candidate synthesis routes, with
 starting materials, reactants/products for every step, evidence and uncertainties.
-Reaction conditions, quantities, yields and experimental procedures are outside v1.
+Reaction conditions, quantities, yields and experimental procedures are outside
+the requested application scope. Reaction and route verification are in scope.
 The configured stock snapshot is the default stopping criterion; a user can
 provide a different inventory. Snapshot membership is not live availability.
 
@@ -91,6 +92,23 @@ operations. The browser can choose registered models and submit molecules; it
 cannot install code or run arbitrary commands. The server binds to loopback.
 
 ## Acceptance
+
+Reaction checking also has an independent evidence service. It checks listed
+heavy-element/isotope sources, validates auxiliary mapping against the complete
+input, retrieves exact represented patent reactions and replays source-derived
+RDChiral contexts. A source context is a structural analogy, not an experimental
+feasibility rule. No-match, absent mapping, tool errors and missing contextual
+evidence remain explicit. These observations do not prune search or alter the
+existing structural, mapping-profile or frozen forward decisions.
+
+Reported-reaction libraries preserve raw rows, quarantine reasons, duplicate
+claims and immutable source/index manifests. Expert reference labels remain in
+the evaluator. Final-reference exact reaction identities are excluded from
+precedent evidence during evaluation; other-source analogies remain distinct.
+Checking jobs preserve provider output before interpreting it, bind every route
+step to its selected prediction and publish separate immutable evidence reports.
+PDF, JSON and MOL/SDF/RXN/SMILES exports retain the represented inputs and expose
+unresolved experimental feasibility. Conditions are neither inferred nor checked.
 
 Contract fixtures include valid routes, corrupt exports, molecular recurrence,
 shared intermediates, missing AND precursors, mapping profiles, stereo conflicts,

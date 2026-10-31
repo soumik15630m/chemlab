@@ -44,6 +44,25 @@ def prepare(root: Path, state: Path) -> None:
         env=env,
         check=True,
     )
+    mapper_python = env.get("CHEMLAB_MAPPER_PYTHON")
+    if not mapper_python:
+        raise RuntimeError("The isolated mapping runtime is missing; use the supported launchers")
+    print("Preparing the reported-reaction library and source-derived contexts.", flush=True)
+    subprocess.run(
+        [
+            sys.executable,
+            str(root / "scripts/setup_reaction_knowledge.py"),
+            "--store",
+            str(state),
+            "--data",
+            env.get("CHEMLAB_REACTION_DATA", str(root / "var/reaction-data")),
+            "--mapper-python",
+            mapper_python,
+        ],
+        cwd=root,
+        env=env,
+        check=True,
+    )
     subprocess.run(
         [
             sys.executable,
@@ -59,6 +78,45 @@ def prepare(root: Path, state: Path) -> None:
         env=env,
         check=True,
     )
+
+
+def prepare_mapping_venv(root: Path, directory: Path, env: dict[str, str]) -> Path:
+    mapping_directory = directory.with_name(directory.name + "-mapping")
+    mapping_python = virtual_python(mapping_directory, sys.platform)
+    if not mapping_directory.exists():
+        venv.EnvBuilder(with_pip=True).create(mapping_directory)
+    if not (mapping_directory / "pyvenv.cfg").is_file() or not mapping_python.is_file():
+        raise RuntimeError("The separate mapping venv is incomplete; existing files are preserved")
+    mapping_lock = mapping_directory / "chemlab-mapping.lock"
+    base_pins = [
+        line
+        for line in (directory / "chemlab-requirements.lock")
+        .read_text(encoding="ascii")
+        .splitlines()
+        if not line.startswith("setuptools==")
+    ]
+    mapping_lock.write_text(
+        "\n".join(base_pins)
+        + "\n"
+        + (root / "requirements-mapping.lock").read_text(encoding="ascii"),
+        encoding="ascii",
+    )
+    subprocess.run(
+        [
+            str(mapping_python),
+            "-m",
+            "pip",
+            "install",
+            "--extra-index-url",
+            "https://download.pytorch.org/whl/cpu",
+            "-r",
+            str(mapping_lock),
+        ],
+        cwd=root,
+        env=env,
+        check=True,
+    )
+    return mapping_python
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -133,6 +191,7 @@ def native_main(argv: list[str] | None = None) -> int:
         env=env,
         check=True,
     )
+    env["CHEMLAB_MAPPER_PYTHON"] = str(prepare_mapping_venv(root, directory, env))
     command = [
         str(python),
         "-m",
@@ -162,7 +221,7 @@ def docker_main(argv: list[str] | None = None) -> int:
     subprocess.run([docker, "compose", "version"], cwd=root, env=env, check=True)
     command = [docker, "compose", "up", "--build"]
     if args.detach:
-        command.extend(["--detach", "--wait", "--wait-timeout", "1800"])
+        command.extend(["--detach", "--wait", "--wait-timeout", "14400"])
     return subprocess.call(command, cwd=root, env=env)
 
 
@@ -171,7 +230,7 @@ def run(entrypoint: Callable[[], int]) -> int:
         return entrypoint()
     except KeyboardInterrupt:
         return 130
-    except (OSError, subprocess.CalledProcessError) as exc:
+    except (OSError, RuntimeError, subprocess.CalledProcessError) as exc:
         print(f"Startup failed: {exc}", file=sys.stderr)
         return 1
 

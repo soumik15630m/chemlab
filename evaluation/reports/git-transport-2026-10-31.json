@@ -1,0 +1,42 @@
+{
+  "seeded_defect_detected": true,
+  "passed": true,
+  "scope": "Real Git checkouts preserve source and evidence bytes; clearing protection changes PDF, multiline JSON and Python hashes",
+  "core_autocrlf": true,
+  "checks": {
+    "baseline": {
+      "evidence.json": {
+        "expected_sha256": "4f879ed5cece5e4dbe7dc2d330e297a6b8a1771b0ddf951b6470086a7f6c2bac",
+        "identical": true,
+        "checkout_sha256": "4f879ed5cece5e4dbe7dc2d330e297a6b8a1771b0ddf951b6470086a7f6c2bac"
+      },
+      "evidence.pdf": {
+        "expected_sha256": "6a961e408f33ee4a30526107c2523ed46e681f15c1fc13f7d3fe9baffde40adf",
+        "identical": true,
+        "checkout_sha256": "6a961e408f33ee4a30526107c2523ed46e681f15c1fc13f7d3fe9baffde40adf"
+      },
+      "engine.py": {
+        "expected_sha256": "33e3f7ad1374a533f48cf8468ce72fae6e2f374d3237fe70980c04044ea36b58",
+        "identical": true,
+        "checkout_sha256": "33e3f7ad1374a533f48cf8468ce72fae6e2f374d3237fe70980c04044ea36b58"
+      }
+    },
+    "mutant": {
+      "evidence.json": {
+        "expected_sha256": "4f879ed5cece5e4dbe7dc2d330e297a6b8a1771b0ddf951b6470086a7f6c2bac",
+        "identical": false,
+        "checkout_sha256": "13f4847b2ee958f02434547eff2fb864baa95dcaf055fa311f9958c6a5fa65ed"
+      },
+      "evidence.pdf": {
+        "expected_sha256": "6a961e408f33ee4a30526107c2523ed46e681f15c1fc13f7d3fe9baffde40adf",
+        "identical": false,
+        "checkout_sha256": "67a189f78b1f18a30ac556630e22c2b621768ead3ff4e5afed06b6c4bab042d9"
+      },
+      "engine.py": {
+        "expected_sha256": "33e3f7ad1374a533f48cf8468ce72fae6e2f374d3237fe70980c04044ea36b58",
+        "identical": false,
+        "checkout_sha256": "86cbf804f22693445f636bc33962a540b8444e3b67366afe807096c3271f3823"
+      }
+    }
+  }
+}

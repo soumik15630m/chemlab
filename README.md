@@ -4,7 +4,7 @@ Enter a target molecule and explore candidate synthesis routes. Inspect the
 starting materials, every reaction step, structural checks, forward consistency
 and available public precedent. Model proposals are untrusted inputs.
 
-V1 omits reaction conditions and experimental procedures. A structurally verified
+Reaction conditions and experimental procedures are excluded. A structurally verified
 route is not a promise of experimental success. Conflicting/incomplete evidence
 is retained and displayed separately.
 
@@ -30,6 +30,15 @@ Individual downloads: [generator weights](models/generator/combined.ckpt),
 [frozen runtime snapshot](artifacts/runtime-v1.zip).
 Undownloaded LFS pointer files are rejected during startup with a recovery message.
 See `docs/artifact-sources.md` for attribution, licenses and data limitations.
+
+The auxiliary mapper artifacts are under `models/rxnmapper-albert-0.4.2`.
+The separate prepared reaction-knowledge archive is about 820 MB:
+`artifacts/reaction-knowledge-v1.zip`; its exact size and SHA-256 are recorded in
+`configs/reaction-sources/knowledge-artifact.json`. `git lfs pull` materializes
+these additions too. Setup verifies and restores the prepared indexes so normal
+startup does not rebuild the full patent corpus.
+`artifacts/reaction-downloads-v1.json` lists the additional archive/model files,
+sizes and hashes; the upstream mapper license accompanies its model mirror.
 
 After downloading, choose Docker or the native venv below. Both launchers reuse
 the materialized model/data files. Runtime history restoration is optional.
@@ -57,7 +66,7 @@ python start_docker.py --detach --port 8081
 
 The script needs Python 3.11+. Detached mode waits for the health check and exits
 nonzero on failure. Alternatively run `docker compose up --build --detach --wait`
-directly. First-time setup can take longer than the wrapper's 30-minute wait on
+directly. First-time setup can take longer than the wrapper's four-hour wait on
 slow connections; inspect `docker compose logs setup` and rerun after it finishes.
 
 Use Ctrl+C to stop a foreground run. For a detached run:
@@ -67,8 +76,10 @@ docker compose logs -f
 docker compose down
 ```
 
-Stopping preserves `models/` and `var/docker/`. The running application mounts
-models read-only. To change the port without the wrapper, set `CHEMLAB_PORT`
+Stopping preserves `models/`, `var/docker/`, source downloads under
+`var/reaction-data/` and the `chemlab-reaction-indexes` Docker volume. The running
+application mounts models and reaction indexes read-only. To change the port
+without the wrapper, set `CHEMLAB_PORT`
 (for example, `$env:CHEMLAB_PORT='8081'` in PowerShell or
 `CHEMLAB_PORT=8081 docker compose up --build` in a POSIX shell).
 
@@ -82,7 +93,7 @@ python start_venv.py
 
 On Windows, `py -3.11 start_venv.py` selects the right interpreter. On Linux or
 macOS, use `python3.11 start_venv.py` if `python` names another version. The
-launcher creates `.venv`, installs the pinned dependencies there, downloads and
+launcher creates `.venv` and a separate `.venv-mapping`, installs the pinned dependencies, downloads and
 registers the same models/data, and serves [ChemLab](http://127.0.0.1:8080).
 Activation and global package installation are unnecessary. Run the same command
 again to reuse the environment and downloads. Ctrl+C stops the server.
@@ -110,6 +121,11 @@ starting the application. An incomplete existing venv is preserved; choose a new
 Allow several GB of disk space and an internet connection for dependency wheels,
 two checkpoint archives and their extracted weights (about 1.7 GB), stock and the
 public precedent corpus. A CPU is sufficient; inference can take minutes.
+The expanded reported-reaction source index alone occupies about 4.7 GB, plus
+the context index and prepared archive. Native startup keeps two separate Python
+environments. Plan additional disk space for these components and retained
+partial downloads/builds. A complete source rebuild can take hours on a laptop;
+the prepared LFS archive avoids that step.
 Models load on the first search. Subsequent launches reuse complete downloaded
 files and verify registered artifact identities; they do not replace checkpoints.
 Interrupted/inconsistent artifacts fail setup and need inspection.
@@ -131,6 +147,11 @@ The downloader uses official Figshare archives and checks the publisher's archiv
 checksum and size. Registration hashes the checkpoint directory and tokenizer.
 The default stock is the PaRoutes v2 n1 snapshot: benchmark stock, not a live
 supplier catalog.
+
+An optional pinned [URSA-BBs stock import](docs/optional-stocks.md) is available,
+with source bytes, identity-v1 conversion and an explicit quarantine audit.
+Its data has separate CC BY-NC-SA 4.0 terms. Full-identity stocks can be combined
+through `merge-stocks`; the original snapshots and component terms are retained.
 
 Setup imports the 40,008-record OpenRetro USPTO-50K training split for exact
 represented-reaction precedent lookup. Its Git blob and original source bytes
@@ -183,6 +204,34 @@ The complete evidence bundle remains available for independent replay, including
 rejected and unresolved diagnostics. Editing a downloaded structure or reaction
 does not preserve its verification status automatically.
 
+Each structurally verified route also offers read-only reaction observations and
+a JSON download. These inspect represented atom inventories, applicable supplied
+atom mappings and bounded comparisons of saved forward representations. Missing
+mapping, incomplete enumeration and unsupported comparisons remain visible.
+Chemical feasibility stays unresolved; these observations do not change stored
+verification results or certify a reaction. See
+[reaction verification development](docs/reaction-verification-development.md)
+for the user-labelled challenge cases, step analysis and current limitations.
+
+## Check reactions and complete routes
+
+Use **Check a reaction** with reaction SMILES in `reactants>>product` form,
+for example `CC(=O)Cl.CN>>CNC(C)=O`. Keep required reactants on the left;
+conditions and the middle agent field are excluded. Select the registered
+reaction knowledge provider. For a saved route, use **Check every reaction in
+this route** to bind the check to every original step and prediction record.
+
+The checker reports listed atom sources, auxiliary mapping, exact patent reports
+and source-derived template replay separately. Its CC0 source library contains
+646,284 distinct represented reactions. Missing matches remain unknown, and
+tool failures remain errors. Source support does not establish experimental
+feasibility. Complete checks offer PDF, JSON and editable MOL/SDF/RXN/SMILES
+downloads and can be replayed without fresh neural inference. See
+[reaction checking](docs/reaction-checking.md) for the full contract and data pins.
+The frozen held-out evaluation also found context support on 15 of 92
+expert-implausible proposals. This layer is evidence checking, and the chemical
+validity problem remains open; the recorded limitations are part of its output.
+
 ## CLI
 
 Run CLI commands in the configured environment:
@@ -199,12 +248,16 @@ commands from the checkout and use the matching state directory.
 - `list`: inspect registered models, stocks and corpora.
 - `register-model ALIAS manifest.json`: register a new immutable model version.
 - `import-stock ALIAS stock.txt --source SOURCE --license TERMS`: import SMILES.
+- `merge-stocks ALIAS STOCK...`: register an exact union of full-identity stocks.
 - `import-corpus ALIAS corpus.json`: import partitioned reaction precedent.
 - `run 'TARGET_SMILES' --config configs/local.json`: search and verify.
 - `show RUN_ID`: inspect a completed or failed run.
 - `check-bundle PATH`: validate publication hashes and references.
 - `reverify RUN_ID`: reconstruct stored routes and compare replayed reports.
 - `parity MODEL INPUT... --count K`: compare direct provider and adapter outputs.
+- `check-reaction 'REACTANTS>>PRODUCT' --knowledge ALIAS`: run reaction evidence checks.
+- `replay-chemical-check JOB_ID`: compare stored-input evidence replay without new inference.
+- `register-reaction-knowledge ALIAS FILE`: register a trusted, pinned knowledge provider.
 - `dataset-audit reactions.jsonl`: audit target and reaction overlap by partition.
 - `dataset-export reactions.jsonl OUTPUT`: export training/development data only.
 
@@ -236,8 +289,16 @@ experiment exhaustively compares 1,572 cases with a separately formulated graph
 oracle. Mutation experiments require assertion failures rather than import/setup
 errors. These are scoped software checks, not proof of chemical feasibility.
 
-The current acceptance suite passes 126 tests and detects 19 named mutations;
-lint, formatting and type checks also pass. Export validation and real browser
+The current acceptance suite passes 220 tests and detects 57 named Python mutations;
+lint, formatting and type checks also pass. The documented Dockerfile rebuild,
+installed pins and direct upstream mapper parity are recorded under
+`evaluation/reports/chemical-dockerfile-2026-10-31/`. Fresh generator/forward
+adapter parity is under `evaluation/reports/pretrained-admission-2026-10-31/`.
+The subsequent venv-interpreter regression and full revalidation are under
+`evaluation/reports/chemical-runtime-fix-2026-10-31/`. Live complete-knowledge
+browser checks are under
+`evaluation/reports/chemical-production-browser-recovery-2026-10-31/`.
+Export validation and real browser
 download checks are under `evaluation/reports/export-validation/`. Distribution
 checks are under `evaluation/reports/lfs-distribution/`. The packaged export image
 is checked separately under `evaluation/reports/export-image-validation/`, with
@@ -251,7 +312,31 @@ setup injection that kept the app stopped. These startup checks reused the
 existing model/data downloads; they do not establish native Windows/macOS support
 or chemical accuracy.
 
+The reaction-observation checks and original-bundle replay are under
+`evaluation/reports/reaction-challenges-2026-10-28/`. The controlled Chromium
+contract test also detects false feasibility wording and reused route numbers.
+These development cases do not establish chemical classification accuracy.
+
+Optional-stock validation is under `evaluation/reports/stock-integration-2026-10-30/`.
+The pinned URSA source yields 255,435 unique identity-v1 entries, with one unstable
+source identity quarantined and all original rows retained. The default stock and
+selected model checkpoints are unchanged. Import and provenance replay traverse
+the complete source and can take minutes on CPU; no speed improvement is claimed.
+
 ## Boundaries and sources
+
+The workspace also checks pasted reaction SMILES and every step of saved routes.
+It reports listed atom sources, validated auxiliary mapping, exact patent reports
+and source-derived template replay, with PDF/JSON and editable chemistry downloads.
+See [reaction checking](docs/reaction-checking.md). Initial startup restores the
+prepared, hash-pinned knowledge archive; subsequent starts validate its snapshot.
+Source-development setup without that artifact descriptor builds from the
+official corpus instead.
+Evidence support remains distinct from experimental feasibility.
+Model-proposed maps are checked against exact inputs; missing or failed evidence
+remains visible. Whole-route evidence requires every selected step, and reports
+can be replayed without new inference. The pinned RDKit stereo-cycle example is
+rejected at engine/depiction admission while its original research record remains.
 
 - RDKit: molecular identity and representations.
 - RDChiral: recorded template application/replay.

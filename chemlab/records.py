@@ -4,7 +4,7 @@ import hashlib
 import json
 from typing import Annotated, Any, Literal
 
-from pydantic import BaseModel, ConfigDict, Field, FiniteFloat, model_validator
+from pydantic import BaseModel, ConfigDict, Field, FiniteFloat, model_serializer, model_validator
 
 
 def canonical_bytes(value: Any) -> bytes:
@@ -178,6 +178,18 @@ class Stock(Record):
     source: str
     license: str
     identities: tuple[str, ...]
+    source_artifact_ref: str | None = None
+    ingestion_report_ref: str | None = None
+    component_refs: tuple[str, ...] = ()
+
+    @model_serializer(mode="wrap")
+    def preserve_legacy_encoding(self, handler):
+        # Empty provenance must not change existing stock content addresses.
+        data = handler(self)
+        for key in ("source_artifact_ref", "ingestion_report_ref", "component_refs"):
+            if data.get(key) in (None, [], ()):
+                data.pop(key, None)
+        return data
 
 
 class ForwardEvidence(Record):

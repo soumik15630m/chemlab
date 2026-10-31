@@ -26,8 +26,19 @@ def file_hash(path: Path) -> str:
     return checksum.hexdigest()
 
 
+def ensure_no_active_chemical_jobs(conn: sqlite3.Connection) -> None:
+    if conn.execute(
+        "SELECT 1 FROM sqlite_master WHERE type='table' AND name='chemical_jobs'"
+    ).fetchone():
+        if conn.execute(
+            "SELECT count(*) FROM chemical_jobs WHERE state IN ('queued','running')"
+        ).fetchone()[0]:
+            raise IntegrityError("Runtime snapshot contains active chemical verification jobs")
+
+
 def validate_runtime(root: Path) -> dict:
     with closing(sqlite3.connect(root / "index.sqlite3")) as conn:
+        ensure_no_active_chemical_jobs(conn)
         if conn.execute("PRAGMA integrity_check").fetchall() != [("ok",)]:
             raise IntegrityError("Runtime database integrity check failed")
         if conn.execute("PRAGMA foreign_key_check").fetchall():
@@ -63,6 +74,7 @@ def export_runtime(source: Path, destination: Path) -> dict:
             with closing(sqlite3.connect(staging / "index.sqlite3")) as backup:
                 original.backup(backup)
         with closing(sqlite3.connect(staging / "index.sqlite3")) as conn:
+            ensure_no_active_chemical_jobs(conn)
             if conn.execute(
                 "SELECT count(*) FROM runs WHERE state IN ('queued','running')"
             ).fetchone()[0]:

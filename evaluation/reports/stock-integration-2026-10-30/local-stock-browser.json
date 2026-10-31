@@ -1,0 +1,23 @@
+{
+  "passed": true,
+  "scope": "Live registry and stock selection; no synthesis or model inference",
+  "new_stock": {
+    "alias": "ursa-bbs-v1-identity-v1",
+    "kind": "stock",
+    "ref": "dc0dfc4f80d0fd42ec9839a28cf0ecd7348941a202323154f56f9ce3e7c393da",
+    "record": {
+      "ingestion_report_ref": "86795fb39f8283f34e83c7487af5b0bf58241c52effac1a0930a53e22bd2d89f",
+      "license": "CC-BY-NC-SA-4.0; https://creativecommons.org/licenses/by-nc-sa/4.0/; Insilico Medicine; Zagribelnyy et al., URSA (2026), https://doi.org/10.48550/arXiv.2607.04688",
+      "name": "URSA-BBs v1.0.0 / identity-v1",
+      "schema_version": 1,
+      "source": "https://huggingface.co/datasets/insilicomedicine/URSA-BBs/resolve/66a64e2e375dde30941770e831ce11ed3db91f55/URSA_BBs_v1_0_0.csv; revision=66a64e2e375dde30941770e831ce11ed3db91f55; Publisher snapshot of reported commercial building blocks. No vendors, prices or live availability are supplied. Identity-v1 conversion is a derived snapshot; it is not the unmodified URSA benchmark stock.",
+      "source_artifact_ref": "e331b95bbb6edfb6545ef97a0729f377c8a3a1b53ff22a85d6cbbb757c162e25",
+      "count": 255435
+    }
+  },
+  "default_stock_preserved": true,
+  "model_choices_preserved": true,
+  "saved_runs": 11,
+  "javascript_errors": [],
+  "fresh_inference_requested": false
+}

@@ -1,0 +1,39 @@
+{
+  "passed": true,
+  "platform": "Linux Python 3.11 inside disposable Docker",
+  "environment": "Two fresh isolated venvs installed from exact pinned cached wheels",
+  "data": "Existing fully hashed model and complete reaction/context snapshots reused",
+  "launcher": [
+    "/usr/local/bin/python",
+    "start_venv.py",
+    "--venv",
+    "/native/engine",
+    "--state",
+    "/native/state",
+    "--prepare-only"
+  ],
+  "health": {
+    "status": "ok",
+    "planner": "Syntheseus Retro*",
+    "identity": "identity-v1"
+  },
+  "job_id": "e1935a1636d649738af049bb9ce45f8d",
+  "evidence_counts": {
+    "unresolved": 1
+  },
+  "downloads": {
+    "report.json": {
+      "bytes": 15344,
+      "sha256": "8a6b1cce53a7a1bc56695be65f3140d175a4bf6a76da9d8eb5e31a23e9e934e3"
+    },
+    "report.pdf": {
+      "bytes": 15492,
+      "sha256": "6a961e408f33ee4a30526107c2523ed46e681f15c1fc13f7d3fe9baffde40adf"
+    },
+    "chemistry.zip": {
+      "bytes": 4192,
+      "sha256": "8739ae0e96a4c77ac1cfb3f23d949e7139452a655308b67de420311fd5d51e26"
+    }
+  },
+  "scope": "Real launcher, HTTP, auxiliary inference, source/context checks and artifact replay; no Windows/macOS execution claim"
+}

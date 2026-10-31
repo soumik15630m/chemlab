@@ -1,0 +1,61 @@
+{
+  "passed": false,
+  "javascript_errors": [],
+  "api_requests": [
+    {
+      "method": "GET",
+      "path": "/api/registry"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/470792e991c24516ac93beda4c2fd67a"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs"
+    },
+    {
+      "method": "GET",
+      "path": "/api/molecule.svg"
+    },
+    {
+      "method": "GET",
+      "path": "/api/molecule.svg"
+    },
+    {
+      "method": "GET",
+      "path": "/api/molecule.svg"
+    },
+    {
+      "method": "GET",
+      "path": "/api/molecule.svg"
+    },
+    {
+      "method": "GET",
+      "path": "/api/molecule.svg"
+    },
+    {
+      "method": "GET",
+      "path": "/api/molecule.svg"
+    },
+    {
+      "method": "GET",
+      "path": "/api/molecule.svg"
+    },
+    {
+      "method": "GET",
+      "path": "/api/molecule.svg"
+    },
+    {
+      "method": "GET",
+      "path": "/api/molecule.svg"
+    }
+  ],
+  "scope": "Frontend contract with controlled API responses; not live inference",
+  "failure_kind": "AssertionError",
+  "error": "Locator expected to contain text 'Chemical feasibility: unresolved.'\nActual value: Route 1 / 2 reaction stepsverifiedconsistentChemical feasibility: established. Structural verification and forward agreement do not establish reaction validity.Editable chemistry files (MOL / SDF / RXN / SMILES)Reaction observations (JSON)Inspect reaction observationsLoad observationsBaseline search cost: 0.0613 (lower first)Exact represented precedent: 0 of 2 steps. Unmatched steps have no exact precedent in this corpus.Cc1n[nH]c2c1C(c1ccccc1)C(C#N)=C(N)O2Molecule PDFMOL fileIntermediate / m0Retrosynthetic step s1 / candidate 0CC1=NNC(=O)C1Molecule PDFMOL fileIntermediate / m1Retrosynthetic step s0 / candidate 0CCOC(=O)CC(C)=OMolecule PDFMOL fileStarting material in stock / m2NNMolecule PDFMOL fileStarting material in stock / m3N#CCC#NMolecule PDFMOL fileStarting material in stock / m4O=Cc1ccccc1Molecule PDFMOL fileStarting material in stock / m5Inspect checks and reaction evidenceCheckOutcomeReasonschemapassroute_schema_valididentitypassserialized_molecules_reconstructedgraphpasscomplete_acyclic_occurrence_treestockpassall_terminals_in_snapshotbinding:s0passmatches_immutable_adapter_candidatemapping:s0unknownmapping_missingtemplate:s0not applicabletemplate_free_predictionbinding:s1passmatches_immutable_adapter_candidatemapping:s1unknownmapping_missingtemplate:s1not applicabletemplate_free_predictionsearch_costpasssearch_cost_reconstructedforward:s0passexact_identity_matchforward:s1passexact_identity_match{\n  \"mapping\": {\n    \"checked\": 0,\n    \"failed\": 0,\n    \"missing\": 2\n  },\n  \"precedent\": {\n    \"s0\": {\n      \"corpus\": \"USPTO-50K OpenRetro training / supported records\",\n      \"corpus_ref\": \"5abfa92e8deebbc94af45ec4eb74717537a2c9f81f28bef1cc6b400a959c3ae0\",\n      \"exact_source_ids\": [],\n      \"match_type\": \"none\",\n      \"multiplicity_policy\": \"occurrences\",\n      \"partition\": \"training\",\n      \"references\": {},\n      \"status\": \"pass\",\n      \"template_source_ids\": [],\n      \"version\": \"gitblob:7f5f61c901d637061dc77ab785e570d9c0d14c22;sha256:90e16c7bace48d3ed868eda41188a710ffd8b45ef0a707d17e3af1a8af3e2700\"\n    },\n    \"s1\": {\n      \"corpus\": \"USPTO-50K OpenRetro training / supported records\",\n      \"corpus_ref\": \"5abfa92e8deebbc94af45ec4eb74717537a2c9f81f28bef1cc6b400a959c3ae0\",\n      \"exact_source_ids\": [],\n      \"match_type\": \"none\",\n      \"multiplicity_policy\": \"occurrences\",\n      \"partition\": \"training\",\n      \"references\": {},\n      \"status\": \"pass\",\n      \"template_source_ids\": [],\n      \"version\": \"gitblob:7f5f61c901d637061dc77ab785e570d9c0d14c22;sha256:90e16c7bace48d3ed868eda41188a710ffd8b45ef0a707d17e3af1a8af3e2700\"\n    }\n  }\n} \nCall log:\n  - Expect \"to_contain_text\" with timeout 5000ms\n  - waiting for locator(\"section.route\").first\n    9 \u00d7 locator resolved to <section class=\"route\">\u2026</section>\n      - unexpected value \"Route 1 / 2 reaction stepsverifiedconsistentChemical feasibility: established. Structural verification and forward agreement do not establish reaction validity.Editable chemistry files (MOL / SDF / RXN / SMILES)Reaction observations (JSON)Inspect reaction observationsLoad observationsBaseline search cost: 0.0613 (lower first)Exact represented precedent: 0 of 2 steps. Unmatched steps have no exact precedent in this corpus.Cc1n[nH]c2c1C(c1ccccc1)C(C#N)=C(N)O2Molecule PDFMOL fileIntermediate / m0Retrosynthetic step s1 / candidate 0CC1=NNC(=O)C1Molecule PDFMOL fileIntermediate / m1Retrosynthetic step s0 / candidate 0CCOC(=O)CC(C)=OMolecule PDFMOL fileStarting material in stock / m2NNMolecule PDFMOL fileStarting material in stock / m3N#CCC#NMolecule PDFMOL fileStarting material in stock / m4O=Cc1ccccc1Molecule PDFMOL fileStarting material in stock / m5Inspect checks and reaction evidenceCheckOutcomeReasonschemapassroute_schema_valididentitypassserialized_molecules_reconstructedgraphpasscomplete_acyclic_occurrence_treestockpassall_terminals_in_snapshotbinding:s0passmatches_immutable_adapter_candidatemapping:s0unknownmapping_missingtemplate:s0not applicabletemplate_free_predictionbinding:s1passmatches_immutable_adapter_candidatemapping:s1unknownmapping_missingtemplate:s1not applicabletemplate_free_predictionsearch_costpasssearch_cost_reconstructedforward:s0passexact_identity_matchforward:s1passexact_identity_match{\n  \"mapping\": {\n    \"checked\": 0,\n    \"failed\": 0,\n    \"missing\": 2\n  },\n  \"precedent\": {\n    \"s0\": {\n      \"corpus\": \"USPTO-50K OpenRetro training / supported records\",\n      \"corpus_ref\": \"5abfa92e8deebbc94af45ec4eb74717537a2c9f81f28bef1cc6b400a959c3ae0\",\n      \"exact_source_ids\": [],\n      \"match_type\": \"none\",\n      \"multiplicity_policy\": \"occurrences\",\n      \"partition\": \"training\",\n      \"references\": {},\n      \"status\": \"pass\",\n      \"template_source_ids\": [],\n      \"version\": \"gitblob:7f5f61c901d637061dc77ab785e570d9c0d14c22;sha256:90e16c7bace48d3ed868eda41188a710ffd8b45ef0a707d17e3af1a8af3e2700\"\n    },\n    \"s1\": {\n      \"corpus\": \"USPTO-50K OpenRetro training / supported records\",\n      \"corpus_ref\": \"5abfa92e8deebbc94af45ec4eb74717537a2c9f81f28bef1cc6b400a959c3ae0\",\n      \"exact_source_ids\": [],\n      \"match_type\": \"none\",\n      \"multiplicity_policy\": \"occurrences\",\n      \"partition\": \"training\",\n      \"references\": {},\n      \"status\": \"pass\",\n      \"template_source_ids\": [],\n      \"version\": \"gitblob:7f5f61c901d637061dc77ab785e570d9c0d14c22;sha256:90e16c7bace48d3ed868eda41188a710ffd8b45ef0a707d17e3af1a8af3e2700\"\n    }\n  }\n}\"\n"
+}

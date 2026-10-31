@@ -1,0 +1,22 @@
+{
+  "protocol": "chemical-reference-evaluation-2026-10-31",
+  "scope": "New reaction-level evaluation; existing planner and forward verification protocols unchanged",
+  "source": "insilicomedicine/URSA-benchmarking-sets",
+  "revision": "42fd2f24df04e2b24836a3019342f396e06c1209",
+  "file": "URSA-reaction-plausibility-bench-2026.csv",
+  "git_blob": "0db2fcb2979fa00d5e633fd876e29978e5c60653",
+  "bytes": 90374,
+  "expected_rows": 1000,
+  "expected_label_counts": {"0": 500, "1": 500},
+  "license": "Apache-2.0",
+  "reference_kind": "Expert-labelled model proposals; not experimental success/failure records",
+  "input_columns": ["reaction_smiles"],
+  "reference_column": "expert_score",
+  "forbidden_checker_columns": ["expert_score", "chemcensor_score", "chemcensor_score_bin"],
+  "grouping": "RDKit canonical product constitution with isomericSmiles=False, used only for split grouping; identity-v1 stays unchanged for all matching",
+  "split": "sha256('ChemLab-chemical-reference-2026-10-31:' + grouping_key) modulo 5; remainder 4 final_reference; others development",
+  "duplicate_policy": "Preserve raw rows; score each full identity-v1 reaction once; conflicting expert labels are reference conflicts, not binary truth",
+  "final_evidence_exclusion": "Exclude exact final-reference reaction identities from operational precedent evidence during evaluation; never insert benchmark reactions or labels into knowledge indexes",
+  "metrics": ["all reference rows", "unique supported inputs", "reference conflicts", "input errors", "support on expert-plausible reactions", "support on expert-implausible reactions", "contradictions by expert label", "unresolved by expert label", "evidence coverage"],
+  "constraints": "No checker access to labels or scorer-generated fields. No final-outcome tuning. Record classifier policy hash before final scoring. Existing 14 user-selected routes are development cases only."
+}

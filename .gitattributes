@@ -1,2 +1,10 @@
+# Hashed evidence and source bindings must survive checkout byte-for-byte.
+* -text
+* whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+*.pdf binary
+*.png binary
+*.zip binary
+*.sqlite3 binary
 models/** filter=lfs diff=lfs merge=lfs -text
 artifacts/*.zip filter=lfs diff=lfs merge=lfs -text
+evaluation/reports/**/evidence/objects/*.json filter=lfs diff=lfs merge=lfs -text

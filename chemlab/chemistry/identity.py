@@ -50,8 +50,15 @@ def require_molecule(smiles: str) -> Molecule:
     return result
 
 
+def require_stable_molecule(smiles: str) -> Molecule:
+    result = require_molecule(smiles)
+    if require_molecule(result.canonical_smiles).canonical_smiles != result.canonical_smiles:
+        raise ValueError("identity_v1_not_idempotent_under_pinned_rdkit")
+    return result
+
+
 def stereo_relation(left: str, right: str) -> str:
-    a, b = require_molecule(left), require_molecule(right)
+    a, b = require_stable_molecule(left), require_stable_molecule(right)
     if a.canonical_smiles == b.canonical_smiles:
         return "exact"
     am, bm = Chem.MolFromSmiles(a.canonical_smiles), Chem.MolFromSmiles(b.canonical_smiles)

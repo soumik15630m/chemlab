@@ -15,8 +15,9 @@ from pydantic import Field
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from chemlab.application import Application
-from chemlab.chemistry import require_molecule
+from chemlab.chemistry import require_stable_molecule
 from chemlab.evidence.checks import import_stock
+from chemlab.evidence.chemical_service import ChemicalService, parse_reaction, route_queries
 from chemlab.records import Record, RunConfig
 from chemlab.registry import Registry
 from chemlab.store import IntegrityError, Store
@@ -34,9 +35,19 @@ class StockRequest(Record):
     license: str
 
 
+class ChemicalRequest(Record):
+    reaction_smiles: str = Field(min_length=1, max_length=32768)
+    knowledge_ref: str | None = None
+
+
+class RouteChemicalRequest(Record):
+    knowledge_ref: str | None = None
+
+
 def create_app(root: Path | str = "var") -> FastAPI:
     store = Store(root)
     application = Application(store)
+    chemical_service = ChemicalService(store)
     registry = Registry(store)
     executor = ThreadPoolExecutor(max_workers=1, thread_name_prefix="chemlab")
 
@@ -47,11 +58,16 @@ def create_app(root: Path | str = "var") -> FastAPI:
                 "UPDATE runs SET state='error', error='interrupted_before_completion' "
                 "WHERE state IN ('running','queued')"
             )
+            conn.execute(
+                "UPDATE chemical_jobs SET state='error', error='interrupted_before_completion' "
+                "WHERE state IN ('running','queued')"
+            )
         yield
         executor.shutdown(wait=True)
 
     app = FastAPI(title="ChemLab", version="0.1.0", lifespan=lifespan)
     app.state.application = application
+    app.state.chemical_service = chemical_service
     app.add_middleware(
         TrustedHostMiddleware, allowed_hosts=["127.0.0.1", "localhost", "testserver"]
     )
@@ -144,6 +160,99 @@ def create_app(root: Path | str = "var") -> FastAPI:
             raise HTTPException(409, "Run has no complete published output")
         return row["result"]
 
+    @app.post("/api/reactions/check", status_code=202)
+    def check_reaction(body: ChemicalRequest):
+        ref = (
+            registry.resolve(body.knowledge_ref, "reaction_knowledge")
+            if body.knowledge_ref
+            else None
+        )
+        job_id = chemical_service.prepare([parse_reaction(body.reaction_smiles)], ref)
+        executor.submit(chemical_service.execute, job_id)
+        return {"id": job_id, "state": "queued"}
+
+    @app.post("/api/runs/{run_id}/routes/{route_ref}/chemical-checks", status_code=202)
+    def check_route_chemistry(run_id: str, route_ref: str, body: RouteChemicalRequest):
+        try:
+            queries, binding = route_queries(completed_bundle(run_id), route_ref)
+        except KeyError as exc:
+            raise HTTPException(404, "Route is not part of this completed run") from exc
+        ref = (
+            registry.resolve(body.knowledge_ref, "reaction_knowledge")
+            if body.knowledge_ref
+            else None
+        )
+        binding["run_id"] = run_id
+        job_id = chemical_service.prepare(queries, ref, route_binding=binding)
+        executor.submit(chemical_service.execute, job_id)
+        return {"id": job_id, "state": "queued"}
+
+    @app.get("/api/chemical-jobs/{job_id}")
+    def chemical_job(job_id: str):
+        try:
+            return chemical_service.job(job_id)
+        except KeyError as exc:
+            raise HTTPException(404, "Chemical check job not found") from exc
+
+    @app.get("/api/chemical-jobs")
+    def chemical_jobs():
+        return chemical_service.jobs()
+
+    @app.get("/api/chemical-jobs/{job_id}/report.json")
+    def chemical_report(job_id: str):
+        from chemlab.records import canonical_bytes
+
+        job = chemical_job(job_id)
+        if job["state"] != "complete":
+            raise HTTPException(409, "Chemical evidence report is incomplete")
+        result = job["result"]
+        references = {job["request_ref"]: "chemical_request", job["result_ref"]: "chemical_report"}
+        if result["mapping_batch_ref"]:
+            references[result["mapping_batch_ref"]] = "mapping_batch"
+        if result["knowledge_ref"]:
+            references[result["knowledge_ref"]] = "reaction_knowledge"
+        objects = {
+            ref: {"kind": kind, "schema_version": 1, "payload": store.get(ref, kind)}
+            for ref, kind in references.items()
+        }
+        return Response(
+            canonical_bytes({"job": job, "objects": objects}),
+            media_type="application/json",
+            headers={
+                "Content-Disposition": f'attachment; filename="chemlab-chemistry-{job_id}.json"'
+            },
+        )
+
+    @app.get("/api/chemical-jobs/{job_id}/report.pdf")
+    def chemical_pdf(job_id: str):
+        from chemlab.reporting.chemical_exports import evidence_pdf
+
+        job = chemical_job(job_id)
+        if job["state"] != "complete":
+            raise HTTPException(409, "Chemical evidence report is incomplete")
+        return Response(
+            evidence_pdf(job),
+            media_type="application/pdf",
+            headers={
+                "Content-Disposition": f'attachment; filename="chemlab-chemistry-{job_id}.pdf"'
+            },
+        )
+
+    @app.get("/api/chemical-jobs/{job_id}/chemistry.zip")
+    def chemical_structures(job_id: str):
+        from chemlab.reporting.chemical_exports import evidence_chemistry_zip
+
+        job = chemical_job(job_id)
+        if job["state"] != "complete":
+            raise HTTPException(409, "Chemical evidence report is incomplete")
+        return Response(
+            evidence_chemistry_zip(job),
+            media_type="application/zip",
+            headers={
+                "Content-Disposition": f'attachment; filename="chemlab-chemistry-{job_id}.zip"'
+            },
+        )
+
     @app.get("/api/runs/{run_id}/report.pdf")
     def pdf_report(run_id: str):
         from chemlab.reporting.pdf import report_pdf
@@ -171,6 +280,25 @@ def create_app(root: Path | str = "var") -> FastAPI:
             headers={
                 "Content-Disposition": (
                     f'attachment; filename="chemlab-{run_id}-{route_ref[:12]}-chemistry.zip"'
+                ),
+            },
+        )
+
+    @app.get("/api/runs/{run_id}/routes/{route_ref}/observations.json")
+    def reaction_observations(run_id: str, route_ref: str):
+        from chemlab.evidence.reaction_diagnostics import diagnose_route
+        from chemlab.records import canonical_bytes
+
+        try:
+            observations = diagnose_route(completed_bundle(run_id), route_ref)
+        except KeyError as exc:
+            raise HTTPException(404, "Route or required evidence is absent") from exc
+        return Response(
+            canonical_bytes(observations),
+            media_type="application/json",
+            headers={
+                "Content-Disposition": (
+                    f'attachment; filename="chemlab-{run_id}-{route_ref[:12]}-observations.json"'
                 ),
             },
         )
@@ -210,7 +338,7 @@ def create_app(root: Path | str = "var") -> FastAPI:
         from rdkit import Chem
         from rdkit.Chem.Draw import rdMolDraw2D
 
-        identity = require_molecule(smiles)
+        identity = require_stable_molecule(smiles)
         mol = Chem.MolFromSmiles(identity.canonical_smiles)
         drawer = rdMolDraw2D.MolDraw2DSVG(360, 180)
         drawer.DrawMolecule(mol)

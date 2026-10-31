@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "name": "URSA-BBs v1.0.0 / identity-v1",
+  "url": "https://huggingface.co/datasets/insilicomedicine/URSA-BBs/resolve/66a64e2e375dde30941770e831ce11ed3db91f55/URSA_BBs_v1_0_0.csv",
+  "revision": "66a64e2e375dde30941770e831ce11ed3db91f55",
+  "sha256": "b895120f2b80a75e9208b969dd6d4d453196bda231649824f9a5d33bb53ad3e6",
+  "size": 10955751,
+  "rows": 255958,
+  "id_column": "bb_id",
+  "smiles_column": "smiles",
+  "license": "CC-BY-NC-SA-4.0",
+  "license_url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+  "attribution": "Insilico Medicine; Zagribelnyy et al., URSA (2026), https://doi.org/10.48550/arXiv.2607.04688",
+  "card_url": "https://huggingface.co/datasets/insilicomedicine/URSA-BBs/raw/66a64e2e375dde30941770e831ce11ed3db91f55/README.md",
+  "card_sha256": "8b010b0cbe5006b6581e55e83f2e4d036276c443659cc89859966a35b8c57b45",
+  "limitations": "Publisher snapshot of reported commercial building blocks. No vendors, prices or live availability are supplied. Identity-v1 conversion is a derived snapshot; it is not the unmodified URSA benchmark stock."
+}

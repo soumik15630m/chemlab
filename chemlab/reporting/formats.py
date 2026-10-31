@@ -12,13 +12,13 @@ from rdkit import Chem
 from rdkit.Chem import rdChemReactions, rdDepictor
 from rdkit.Chem.Draw import rdMolDraw2D
 
-from chemlab.chemistry import require_molecule
+from chemlab.chemistry import require_molecule, require_stable_molecule
 from chemlab.records import Route, VerificationReport, canonical_bytes, digest
 from chemlab.store import IntegrityError
 
 
 def depiction_molecule(smiles: str):
-    identity = require_molecule(smiles)
+    identity = require_stable_molecule(smiles)
     mol = Chem.MolFromSmiles(identity.canonical_smiles)
     rdDepictor.Compute2DCoords(mol, canonOrient=True, clearConfs=True, sampleSeed=0)
     return mol

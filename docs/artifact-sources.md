@@ -44,7 +44,54 @@ records the representation/ingestion policy and the source patent references.
 Stock is benchmark availability, not a current supplier offer. No validation/test
 split has been added to search guidance.
 
-## Runtime snapshot
+## Optional stock imports
+
+Optional URSA-BBs ingestion is documented in [optional stocks](optional-stocks.md).
+The pinned source is Hugging Face revision
+`66a64e2e375dde30941770e831ce11ed3db91f55`, CSV SHA-256
+`b895120f2b80a75e9208b969dd6d4d453196bda231649824f9a5d33bb53ad3e6`.
+It is CC BY-NC-SA 4.0 and retains the publisher's card and attribution in the
+registered source. It is not included in the frozen runtime-v1 snapshot, and it
+is not relabelled Apache-2.0. Stock availability and reaction validity remain
+separate assessments.
+
+## Reaction knowledge additions
+
+Daniel Lowe's USPTO 1976-Sep2016 SMILES archives are CC0-1.0, pinned by DOI,
+publisher file IDs and checksums in `configs/reaction-sources/lowe.json`:
+https://doi.org/10.6084/m9.figshare.5104873.v1. Derived indexes preserve original
+rows and quarantine unsupported representations; extraction does not certify a
+reaction. The prepared source/context indexes are distributed separately as
+`artifacts/reaction-knowledge-v1.zip`, pinned by
+`configs/reaction-sources/knowledge-artifact.json`. Normal setup verifies and
+restores that archive. Source-development setup without the descriptor downloads
+the original publisher files and builds the indexes. The original runtime-v1
+archive remains unchanged.
+
+RXNMapper 0.4.2 and its bundled ALBERT mapping model are MIT:
+https://github.com/rxn4chemistry/rxnmapper. Exact model/tokenizer hashes are in
+`configs/mapping/rxnmapper.json`. RDChiral 1.1.0 is MIT:
+https://github.com/connorcoley/rdchiral. Their outputs are independently checked at
+the boundary and are not treated as chemical authorities.
+The original mapper license is retained as
+`models/rxnmapper-albert-0.4.2-LICENSE`. Additional download sizes and hashes are
+listed in `artifacts/reaction-downloads-v1.json`; every mirrored model file is
+checked against the pinned installed publisher distribution.
+
+The URSA expert plausibility CSV is a separate Apache-2.0 reference dataset:
+https://huggingface.co/datasets/insilicomedicine/URSA-benchmarking-sets.
+Revision and Git blob are frozen in `configs/chemical-evaluation/protocol.json`.
+Only expert labels are used for evaluation; neither labels nor generated scorer
+columns enter operational knowledge or checker features. ChemCensor itself has
+an evaluation-only license and is not integrated.
+
+Archive handling adds py7zr 1.1.4, LGPL-2.1-or-later, with its own transitive
+package licenses. Installed distributions retain their upstream notices. These
+terms are separate from ChemLab's Apache-2.0 code license.
+Pebble 5.2.3 supplies interruptible worker processes and retains its LGPL terms:
+https://github.com/noxdafox/pebble.
+
+## Original runtime snapshot
 
 `artifacts/runtime-v1.zip` contains a consistent SQLite backup, registered
 content-addressed objects, prediction/cache references and the complete bundles

@@ -1,0 +1,34 @@
+{
+  "name": "Lowe USPTO 1976-Sep2016 SMILES",
+  "doi": "10.6084/m9.figshare.5104873.v1",
+  "metadata_url": "https://api.figshare.com/v2/articles/5104873",
+  "license": "CC0-1.0",
+  "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "kind": "reported_patent",
+  "partition": "training",
+  "limitations": "Patent-extracted reports, not independently verified experimental records. Model-training overlap is unknown. Unsupported CX reaction metadata is quarantined under identity-v1.",
+  "files": [
+    {
+      "id": "lowe-grants-1976-sep2016",
+      "url": "https://ndownloader.figshare.com/files/8664379",
+      "archive": "1976_Sep2016_USPTOgrants_smiles.7z",
+      "bytes": 75191394,
+      "sha256": "d10f8ecb013d3f7bc85abdf6a8c5da8a7dd992931c1fda5db14fbd764343bc4e",
+      "publisher_md5": "b0d94806fe7479fad6db9b894cff858e",
+      "member": "1976_Sep2016_USPTOgrants_smiles.rsmi",
+      "extracted_bytes": 796765311,
+      "extracted_sha256": "5e91117efdb228642647ff26fc5f41b8babf544ca60b2967d76adf243352b626"
+    },
+    {
+      "id": "lowe-applications-2001-sep2016",
+      "url": "https://ndownloader.figshare.com/files/8664370",
+      "archive": "2001_Sep2016_USPTOapplications_smiles.7z",
+      "bytes": 87597379,
+      "sha256": "cbf77ad7a64573c5861141459c8c97dd5434993c336fb41e7062bc3f5d66b07a",
+      "publisher_md5": "9c35a32067329abf2bdbdac5f4820286",
+      "member": "2001_Sep2016_USPTOapplications_smiles.rsmi",
+      "extracted_bytes": 899034074,
+      "extracted_sha256": "354458be6cb6418727353ac6cc2982fca6f87ed0d1efaa067135b65daf08b05c"
+    }
+  ]
+}

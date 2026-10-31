@@ -23,5 +23,10 @@ CMD ["-q", "--basetemp=/tmp/chemlab-tests"]
 FROM test AS pretrained
 RUN pip install --no-cache-dir -c requirements.lock torch==2.14.1 --index-url https://download.pytorch.org/whl/cpu
 RUN pip install --no-cache-dir -c requirements.lock '.[pretrained]'
+COPY requirements-mapping.lock ./
+RUN python -m venv --system-site-packages /opt/chemlab-mapper \
+    && sed '/^setuptools==/d' requirements.lock > /tmp/mapper-engine-constraints.txt \
+    && /opt/chemlab-mapper/bin/pip install --no-cache-dir -c /tmp/mapper-engine-constraints.txt -r requirements-mapping.lock
+ENV CHEMLAB_MAPPER_PYTHON=/opt/chemlab-mapper/bin/python CHEMLAB_REACTION_DATA=/workspace/reaction-data CHEMLAB_REACTION_INDEXES=/workspace/reaction-indexes
 ENTRYPOINT ["python", "-m", "chemlab"]
 CMD ["serve", "--host", "0.0.0.0"]

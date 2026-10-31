@@ -1,0 +1,65 @@
+{
+  "distinct_textual_steps": 22,
+  "pyrazolone_case": {
+    "actual_forward_products": [
+      "COC(=O)C/C(C)=N/N",
+      "Cc1cc(O)[nH]n1",
+      "COC(=O)C/C(C)=N\\N",
+      "COC(=O)CC(C)=NN",
+      "Cc1cc(O)n[nH]1"
+    ],
+    "common_diagnostic_tautomer": "Cc1cc(=O)[nH][nH]1",
+    "engine_identity_policy_changed": false,
+    "prediction_ref": "1e139dc101095986628f2000b83a374d6c76fdd9a3303fb84093e24c4426909a"
+  },
+  "reports": [
+    {
+      "groups": {
+        "availability": 0,
+        "rejected": 0,
+        "unresolved": 0,
+        "verified_consistent": 3,
+        "verified_other_evidence": 2
+      },
+      "pdf_pages": 9,
+      "pdf_sha256": "30fc67b3d1cfe5b12b82070ddc37477e27674f60728fce2dc509e7375571135b",
+      "policy": "verification-v1.2",
+      "run_id": "470792e991c24516ac93beda4c2fd67a",
+      "step_occurrences": 8,
+      "target": "Cc1n[nH]c2c1C(c1ccccc1)C(C#N)=C(N)O2"
+    },
+    {
+      "groups": {
+        "availability": 0,
+        "rejected": 0,
+        "unresolved": 0,
+        "verified_consistent": 2,
+        "verified_other_evidence": 3
+      },
+      "pdf_pages": 11,
+      "pdf_sha256": "87f19a01aaf5e67f60de0e3a95c35d9e7e3955b2665396745381ee5f350ceedb",
+      "policy": "verification-v1.2",
+      "run_id": "7b270a4b59074c3781e5b2cd44a1d8d3",
+      "step_occurrences": 19,
+      "target": "N#C/C(C(N)=O)=C1/NCc2ccccc21"
+    },
+    {
+      "groups": {
+        "availability": 0,
+        "rejected": 0,
+        "unresolved": 0,
+        "verified_consistent": 0,
+        "verified_other_evidence": 4
+      },
+      "pdf_pages": 9,
+      "pdf_sha256": "512757f84811a5d30baa854af716b3fcc49df13d631f23acc89a4ed762808c63",
+      "policy": "verification-v1.2",
+      "run_id": "c403c0ac85714302a10bc322929da630",
+      "step_occurrences": 12,
+      "target": "N#CC1=C(N)Oc2nc3[nH]c4ccccc4n3c(=O)c2C12C(=O)Nc1ccccc12"
+    }
+  ],
+  "route_count": 14,
+  "scope": "Manual audit input binding and representation diagnostics only; not chemical validation",
+  "step_occurrences": 39
+}

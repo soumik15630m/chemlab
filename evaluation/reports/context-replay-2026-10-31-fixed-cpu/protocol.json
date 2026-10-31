@@ -1,0 +1,1 @@
+{"canary_repetitions":64,"drift_limit":0.1,"order":"Alternate AB and BA by repetition; fastest sample per variant","regime":"Within-process duplicate replay; not first-execution inference","repetitions":8,"scope":"Context extraction only; no finished-dispatch or cold-start claim","source_rows":128,"warmup_blocks":2}

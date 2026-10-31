@@ -17,7 +17,7 @@ from syntheseus import BackwardReactionModel, Bag, SingleProductReaction
 from syntheseus import Molecule as SMolecule
 
 from chemlab.adapters.sdk import PredictionProvider, validate_files, validate_tokenization
-from chemlab.chemistry import require_molecule
+from chemlab.chemistry import require_molecule, require_stable_molecule
 from chemlab.records import (
     Candidate,
     CandidateError,
@@ -197,7 +197,7 @@ class ModelService:
         self.cache_hits = 0
 
     def effective(self, smiles: str) -> str:
-        mol = require_molecule(smiles)
+        mol = require_stable_molecule(smiles)
         molecule = Chem.MolFromSmiles(mol.canonical_smiles)
         supported = self.manifest.supported_atomic_numbers
         if supported and any(a.GetAtomicNum() not in supported for a in molecule.GetAtoms()):
@@ -270,7 +270,7 @@ class ModelService:
                     raise ValueError("Prediction list violates the requested output count")
                 for index, item in enumerate(raw):
                     try:
-                        precursors = tuple(require_molecule(s) for s in item["precursors"])
+                        precursors = tuple(require_stable_molecule(s) for s in item["precursors"])
                         score = float(item["score"])
                         cost = score_cost(score, self.manifest)
                         template = item.get("template_id")

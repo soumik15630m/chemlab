@@ -44,11 +44,24 @@
         <label>One SMILES per line<textarea id="stock-smiles" rows="5" required></textarea></label>
         <button type="submit">Save immutable snapshot</button>
       </form></details>
+      <section class="panel">
+        <h2>Check a reaction</h2>
+        <form id="reaction-form">
+          <label for="reaction-smiles">Reaction SMILES <span>reactants&gt;&gt;product</span></label>
+          <textarea id="reaction-smiles" rows="4" required spellcheck="false" placeholder="CCO&gt;&gt;CC=O"></textarea>
+          <label for="knowledge">Reaction knowledge</label>
+          <select id="knowledge"><option value="">Listed atom sources only</option></select>
+          <button type="submit">Check reaction evidence</button>
+          <p class="fine">Checks every listed reaction input. Patent precedent and model atom maps support investigation; they do not establish experimental feasibility.</p>
+        </form>
+        <div id="chemical-history"></div>
+      </section>
     </aside>
     <section class="results-area">
       <div class="section-heading"><span class="number">02</span><h2>Search notebook</h2><button class="quiet" id="refresh" type="button">Refresh</button></div>
       <div id="runs" class="runs"></div>
       <div id="result" class="panel empty"><span class="empty-mark">C &mdash; C</span><h3>Your routes will appear here</h3><p>Choose a target and registered models to begin. Every completed run keeps its configuration, predictions, and verification reports.</p></div>
+      <section id="reaction-result" class="panel" aria-live="polite" hidden></section>
     </section>
   </div>
 </main>

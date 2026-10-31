@@ -1,0 +1,38 @@
+{
+  "mode": "Remote HDF metadata inspection through HTTP ranges; no stock admitted",
+  "url": "https://ndownloader.figshare.com/files/23086469",
+  "upstream_commit": "21ff546d5f22331b078390a2f12dc04defc3f39c",
+  "datasets": [
+    {
+      "name": "table/axis0",
+      "shape": [
+        1
+      ],
+      "dtype": "|S9",
+      "column_labels": [
+        "inchi_key"
+      ]
+    },
+    {
+      "name": "table/axis1",
+      "shape": [
+        17422831
+      ],
+      "dtype": "int64"
+    },
+    {
+      "name": "table/block0_items",
+      "shape": [
+        1
+      ],
+      "dtype": "|S9"
+    },
+    {
+      "name": "table/block0_values",
+      "shape": [
+        1
+      ],
+      "dtype": "object"
+    }
+  ]
+}

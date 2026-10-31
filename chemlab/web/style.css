@@ -3,3 +3,9 @@
 .result-title { overflow-wrap: anywhere; }
 .run-link:hover { background: #d5e2d5; }
 .download-actions {display:flex;flex-wrap:wrap;gap:8px 16px;margin:10px 0;font-size:12px;}.molecule-card .download-actions {padding:0 12px;}
+.route > code {display:block;overflow-wrap:anywhere;font-size:12px;margin:8px 0;}
+.badge.contradiction {background:#fae8e4;color:var(--red);}
+.badge.support {background:#e4eee5;color:var(--accent);}
+#chemical-history button {display:block;max-width:100%;white-space:normal;text-align:left;margin:8px 0;}
+#reaction-result table {table-layout:fixed;}
+.route td:first-child {overflow-wrap:anywhere;}

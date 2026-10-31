@@ -30,6 +30,13 @@ def references(kind: str, payload: dict[str, Any]) -> set[str]:
             for key in ("source_artifact_ref", "ingestion_report_ref")
             if payload.get(key)
         )
+    elif kind == "stock":
+        refs.update(payload.get("component_refs", ()))
+        refs.update(
+            payload[key]
+            for key in ("source_artifact_ref", "ingestion_report_ref")
+            if payload.get(key)
+        )
     elif kind == "run_manifest":
         refs.update(payload.get("search", {}).get("prediction_refs", []))
         refs.update(

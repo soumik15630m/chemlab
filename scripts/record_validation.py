@@ -12,9 +12,37 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 
+def source_hashes(root: Path) -> dict[str, str]:
+    files = {
+        file
+        for directory in ("chemlab", "tests", "scripts", "configs")
+        for file in (root / directory).rglob("*")
+        if file.is_file() and file.suffix in (".py", ".js", ".css", ".html", ".json")
+    }
+    files.update(
+        root / name
+        for name in (
+            "start_venv.py",
+            "start_docker.py",
+            "Dockerfile",
+            "compose.yaml",
+            "requirements.lock",
+            "requirements-mapping.lock",
+        )
+        if (root / name).is_file()
+    )
+    return {
+        file.relative_to(root).as_posix(): hashlib.sha256(file.read_bytes()).hexdigest()
+        for file in sorted(files)
+    }
+
+
 def main(destination: Path) -> int:
     root = Path(__file__).resolve().parents[1]
-    destination.mkdir(parents=True, exist_ok=True)
+    if destination.exists():
+        raise FileExistsError("Validation reports are immutable; choose a new directory")
+    destination.mkdir(parents=True)
+    before = source_hashes(root)
     commands = [
         [
             "ruff",
@@ -52,7 +80,18 @@ def main(destination: Path) -> int:
     ]
     results = []
     for command in commands:
-        result = subprocess.run(command, cwd=root, capture_output=True, text=True, timeout=300)
+        try:
+            result = subprocess.run(command, cwd=root, capture_output=True, text=True, timeout=600)
+        except subprocess.TimeoutExpired as exc:
+            results.append(
+                {
+                    "command": command,
+                    "returncode": 124,
+                    "stdout": "",
+                    "stderr": f"Validation operation timed out: {exc}",
+                }
+            )
+            break
         results.append(
             {
                 "command": command,
@@ -65,23 +104,10 @@ def main(destination: Path) -> int:
         if result.returncode:
             print(result.stderr, flush=True)
             break
-    source_files = sorted(
-        file
-        for directory in ("chemlab", "tests", "scripts")
-        for file in (root / directory).rglob("*.py")
+    hashes = source_hashes(root)
+    changed = sorted(
+        name for name in before.keys() | hashes.keys() if before.get(name) != hashes.get(name)
     )
-    hashes = {
-        file.relative_to(root).as_posix(): hashlib.sha256(file.read_bytes()).hexdigest()
-        for file in source_files
-    }
-    for name in (
-        "start_venv.py",
-        "start_docker.py",
-        "Dockerfile",
-        "compose.yaml",
-        "requirements.lock",
-    ):
-        hashes[name] = hashlib.sha256((root / name).read_bytes()).hexdigest()
     junit = destination / "contract-suite.xml"
     counts = {}
     if junit.exists():
@@ -93,10 +119,14 @@ def main(destination: Path) -> int:
     report = {
         "recorded_at_utc": datetime.now(UTC).isoformat(),
         "scope": "Local Docker computational validation",
-        "passed": len(results) == len(commands) and all(r["returncode"] == 0 for r in results),
+        "passed": not changed
+        and len(results) == len(commands)
+        and all(r["returncode"] == 0 for r in results),
         "commands": results,
         "test_counts": counts,
         "source_hashes": hashes,
+        "initial_source_hashes": before,
+        "source_changes_during_validation": changed,
         "versions": {
             name: importlib.metadata.version(name)
             for name in ("rdkit", "rdchiral", "syntheseus", "pydantic", "fastapi", "pytest")

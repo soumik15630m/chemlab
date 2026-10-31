@@ -1,0 +1,61 @@
+{
+  "passed": false,
+  "javascript_errors": [],
+  "api_requests": [
+    {
+      "method": "GET",
+      "path": "/api/registry"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/470792e991c24516ac93beda4c2fd67a"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs"
+    },
+    {
+      "method": "GET",
+      "path": "/api/molecule.svg"
+    },
+    {
+      "method": "GET",
+      "path": "/api/molecule.svg"
+    },
+    {
+      "method": "GET",
+      "path": "/api/molecule.svg"
+    },
+    {
+      "method": "GET",
+      "path": "/api/molecule.svg"
+    },
+    {
+      "method": "GET",
+      "path": "/api/molecule.svg"
+    },
+    {
+      "method": "GET",
+      "path": "/api/molecule.svg"
+    },
+    {
+      "method": "GET",
+      "path": "/api/molecule.svg"
+    },
+    {
+      "method": "GET",
+      "path": "/api/molecule.svg"
+    },
+    {
+      "method": "GET",
+      "path": "/api/molecule.svg"
+    }
+  ],
+  "scope": "Frontend contract with controlled API responses; not live inference",
+  "failure_kind": "AssertionError",
+  "error": "Locator expected to contain text 'Route 2 /'\nActual value: Route 1 / 2 reaction steps \nCall log:\n  - Expect \"to_contain_text\" with timeout 5000ms\n  - waiting for locator(\"section.route\").nth(1).locator(\"h3\")\n    9 \u00d7 locator resolved to <h3>Route 1 / 2 reaction steps</h3>\n      - unexpected value \"Route 1 / 2 reaction steps\"\n"
+}

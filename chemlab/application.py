@@ -9,7 +9,7 @@ from datetime import UTC, datetime
 from typing import Any
 
 from chemlab.adapters.models import ModelService
-from chemlab.chemistry import require_molecule
+from chemlab.chemistry import require_stable_molecule
 from chemlab.evidence.checks import load_stock
 from chemlab.planning import search
 from chemlab.records import ModelManifest, RunConfig
@@ -30,7 +30,7 @@ class Application:
         return self._models[ref]
 
     def prepare(self, target: str, config: RunConfig) -> str:
-        target = require_molecule(target).canonical_smiles
+        target = require_stable_molecule(target).canonical_smiles
         backward = ModelManifest.model_validate(
             self.store.get(config.backward_manifest, "model_manifest")
         )

@@ -5,6 +5,21 @@ import pytest
 import yaml
 
 from chemlab import bootstrap
+from scripts.setup_reaction_knowledge import mapper_command
+
+
+def test_mapper_interpreter_symlink_keeps_the_selected_virtual_environment(tmp_path):
+    base = tmp_path / "base-python"
+    base.write_text("base interpreter", encoding="ascii")
+    selected = tmp_path / "mapping-venv" / "bin" / "python"
+    selected.parent.mkdir(parents=True)
+    selected.symlink_to(base)
+    assert mapper_command(selected) == (
+        str(selected),
+        "-m",
+        "chemlab.evidence.mapping_worker",
+    )
+    assert mapper_command(selected)[0] != str(base)
 
 
 def test_compose_initialization_gate_and_persistent_mounts():
@@ -20,6 +35,8 @@ def test_compose_initialization_gate_and_persistent_mounts():
     assert "./models:/workspace/models:ro" in app["volumes"]
     assert "./var/docker:/workspace/var" in setup["volumes"]
     assert "./var/docker:/workspace/var" in app["volumes"]
+    assert "./var/reaction-data:/workspace/reaction-data" in setup["volumes"]
+    assert "./var/reaction-data:/workspace/reaction-data:ro" in app["volumes"]
     assert app["read_only"] is True
     assert app["ports"] == ["127.0.0.1:${CHEMLAB_PORT:-8080}:8080"]
 
@@ -81,16 +98,48 @@ def test_download_failure_blocks_registration(monkeypatch, tmp_path):
     assert Path(commands[0][1]).name == "fetch_pretrained.py"
 
 
+def test_missing_or_failed_knowledge_preparation_blocks_model_registration(monkeypatch, tmp_path):
+    commands = []
+    monkeypatch.delenv("CHEMLAB_MAPPER_PYTHON", raising=False)
+    monkeypatch.setattr(bootstrap.subprocess, "run", lambda command, **kw: commands.append(command))
+    with pytest.raises(RuntimeError, match="mapping runtime"):
+        bootstrap.prepare(tmp_path, tmp_path / "state")
+    assert len(commands) == 1
+    commands.clear()
+    monkeypatch.setenv("CHEMLAB_MAPPER_PYTHON", "/isolated/mapper/python")
+
+    def fail_knowledge(command, **kwargs):
+        commands.append(command)
+        if "setup_reaction_knowledge.py" in command[1]:
+            raise subprocess.CalledProcessError(19, command)
+
+    monkeypatch.setattr(bootstrap.subprocess, "run", fail_knowledge)
+    with pytest.raises(subprocess.CalledProcessError):
+        bootstrap.prepare(tmp_path, tmp_path / "state")
+    assert len(commands) == 2
+    assert all("setup-pretrained" not in command for command in commands)
+
+
 def test_native_installs_and_runs_only_selected_virtual_interpreter(monkeypatch, tmp_path):
     root = tmp_path / "checkout with spaces"
     root.mkdir()
-    (root / "requirements.lock").write_text("torch==2.14.1+cpu\n", encoding="ascii")
+    (root / "requirements.lock").write_text(
+        "torch==2.14.1+cpu\nsetuptools==84.2.1\n", encoding="ascii"
+    )
+    (root / "requirements-mapping.lock").write_text(
+        "rxnmapper==0.4.2\nsetuptools==80.9.0\n", encoding="ascii"
+    )
     monkeypatch.setattr(bootstrap, "__file__", str(root / "chemlab" / "bootstrap.py"))
     directory = tmp_path / "chosen venv"
     python = bootstrap.virtual_python(directory, bootstrap.sys.platform)
     python.parent.mkdir(parents=True)
     python.touch()
     (directory / "pyvenv.cfg").write_text("home = /example", encoding="ascii")
+    mapping_directory = directory.with_name(directory.name + "-mapping")
+    mapping_python = bootstrap.virtual_python(mapping_directory, bootstrap.sys.platform)
+    mapping_python.parent.mkdir(parents=True)
+    mapping_python.touch()
+    (mapping_directory / "pyvenv.cfg").write_text("home = /example", encoding="ascii")
     calls = []
 
     def execute(command, **kwargs):
@@ -100,8 +149,13 @@ def test_native_installs_and_runs_only_selected_virtual_interpreter(monkeypatch,
     monkeypatch.setattr(bootstrap.subprocess, "run", execute)
     monkeypatch.setattr(bootstrap.subprocess, "call", execute)
     assert bootstrap.native_main(["--venv", str(directory), "--port", "8123"]) == 0
-    assert len(calls) == 3
-    assert all(command[0] == str(python) for command, _ in calls)
+    assert len(calls) == 4
+    assert [command[0] for command, _ in calls] == [
+        str(python),
+        str(python),
+        str(mapping_python),
+        str(python),
+    ]
     assert calls[0][0][1:] == ["-m", "ensurepip", "--upgrade"]
     assert calls[1][0][1:4] == ["-m", "pip", "install"]
     assert calls[1][1]["check"] is True
@@ -112,6 +166,13 @@ def test_native_installs_and_runs_only_selected_virtual_interpreter(monkeypatch,
     assert command[-2:] == ["--port", "8123"]
     assert options["cwd"] == root
     assert options["env"]["PYTHONPATH"] == str(root)
+    assert options["env"]["CHEMLAB_MAPPER_PYTHON"] == str(mapping_python)
+    assert (
+        directory / "chemlab-requirements.lock"
+    ).read_text() == "torch==2.14.1+cpu\nsetuptools==84.2.1\n"
+    assert (
+        mapping_directory / "chemlab-mapping.lock"
+    ).read_text() == "torch==2.14.1+cpu\nrxnmapper==0.4.2\nsetuptools==80.9.0\n"
 
 
 def test_incomplete_existing_directory_is_preserved(monkeypatch, tmp_path):
@@ -137,7 +198,7 @@ def test_detached_compose_waits_for_health_and_propagates_failure(monkeypatch):
     assert bootstrap.docker_main(["--detach", "--port", "8124"]) == 5
     command, options = commands[0]
     assert command[:4] == ["/usr/bin/docker", "compose", "up", "--build"]
-    assert command[4:] == ["--detach", "--wait", "--wait-timeout", "1800"]
+    assert command[4:] == ["--detach", "--wait", "--wait-timeout", "14400"]
     assert options["env"]["CHEMLAB_PORT"] == "8124"
 
 

@@ -39,8 +39,20 @@ addition to ChemLab. The default integration uses:
 - [PaRoutes v2](https://zenodo.org/records/7341155) for the n1 stock snapshot.
 - [OpenRetro](https://github.com/coleygroup/openretro) for the USPTO-50K training
   split used in represented-reaction precedent lookup.
+- [Daniel Lowe's USPTO corpus](https://doi.org/10.6084/m9.figshare.5104873.v1)
+  for the separate CC0 reported-reaction knowledge library.
+- [RXNMapper](https://github.com/rxn4chemistry/rxnmapper), Schwaller et al. (2021),
+  *Extraction of organic chemistry grammar from unsupervised learning of chemical
+  reactions*, Science Advances 7(15), eabe4166, for auxiliary atom correspondence.
+- [URSA benchmarking sets](https://huggingface.co/datasets/insilicomedicine/URSA-benchmarking-sets)
+  for separate expert-labelled reaction plausibility evaluation, when used.
 
 Use each upstream project's recommended citation for the pinned version you
 used. See [artifact sources](docs/artifact-sources.md) for exact source records,
 license boundaries and data limitations. The project's Apache-2.0 license does
 not replace upstream software, checkpoint or dataset terms.
+
+When using the optional URSA-BBs stock, also cite Zagribelnyy et al. (2026),
+[URSA: Chemistry-Aware Benchmark for Utilitarian Retrosynthesis Assessment](https://doi.org/10.48550/arXiv.2607.04688).
+Record the dataset revision and the derived identity-v1 stock reference; the
+optional import retains the publisher's citation and CC BY-NC-SA 4.0 dataset card.

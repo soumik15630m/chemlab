@@ -1,0 +1,37 @@
+{
+  "passed": true,
+  "archive_sha256": "ad253ee09783bf7767ceb4a827c27c30f1027425b8c1d0c71dbe72485a224e2c",
+  "archive_bytes": 820425621,
+  "source_ref": "781b4fcdcbd693a69ef38e0934b25483a6227c5ada4969f338d876bd74795250",
+  "context_ref": "d2b7ea1845c3d71c281d42787f3d7f6d561a19764db9500dc7ccee7b086c2b62",
+  "knowledge_ref": "20f9a349987aaca6ba43474c875fffcc004dd2ccee1553ce8d9238bdacff17ed",
+  "source_database_sha256": "e5a16da15b1c9b4b79fb96b4cc08629bb3598aef5c0f7e789ca72ffb3aea8914",
+  "context_database_sha256": "2b237cdb31ba6c9ff56266458c51362c1852a446363a8ed968d90ffcfbcc4dcc",
+  "source_rows": {
+    "accepted_rows": 1693472,
+    "input_rows": 3748190,
+    "mapping_fail": 90100,
+    "mapping_pass": 1603372,
+    "quarantined_rows": 2054718,
+    "unique_reactions": 646284
+  },
+  "context_rows": {
+    "distinct_templates": 181033,
+    "error": 21,
+    "observed": 1597088,
+    "unknown": 96363
+  },
+  "command": [
+    "/usr/local/bin/python",
+    "scripts/setup_reaction_knowledge.py",
+    "--store",
+    "/restore/state",
+    "--data",
+    "/restore/data",
+    "--indexes",
+    "/restore/indexes",
+    "--mapper-python",
+    "/opt/chemlab-mapper/bin/python"
+  ],
+  "scope": "Real LFS archive restored and registered on an empty Docker volume without network or a corpus rebuild"
+}

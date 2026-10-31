@@ -4,26 +4,51 @@ from collections import Counter
 from typing import Any
 
 from chemlab.adapters.models import ModelService
-from chemlab.chemistry import require_molecule
+from chemlab.chemistry import require_molecule, require_stable_molecule
 from chemlab.chemistry.identity import stereo_relation
-from chemlab.records import Candidate, Check, Corpus, Molecule, Status, Stock
+from chemlab.records import Candidate, Check, Corpus, Molecule, Status, Stock, canonical_bytes
 from chemlab.store import Store
 
 
 def import_stock(store: Store, smiles: list[str], name: str, source: str, license: str) -> str:
-    identities = tuple(sorted({require_molecule(s).canonical_smiles for s in smiles}))
+    identities = tuple(sorted({require_stable_molecule(s).canonical_smiles for s in smiles}))
     return store.put(
         "stock", Stock(name=name, source=source, license=license, identities=identities)
     )
 
 
-def load_stock(store: Store, ref: str) -> Stock:
+def load_stock(store: Store, ref: str, _ancestors: frozenset[str] = frozenset()) -> Stock:
+    if ref in _ancestors:
+        raise ValueError("Stock provenance has a component cycle")
     stock = Stock.model_validate(store.get(ref, "stock"))
     for identity in stock.identities:
         if require_molecule(identity).canonical_smiles != identity:
             raise ValueError("Stock contains a noncanonical identity")
     if len(set(stock.identities)) != len(stock.identities):
         raise ValueError("Stock contains duplicate identities")
+    if bool(stock.source_artifact_ref) != bool(stock.ingestion_report_ref):
+        raise ValueError("Imported stock requires both source and ingestion report")
+    if stock.source_artifact_ref:
+        if stock.component_refs:
+            raise ValueError("A stock cannot be both a CSV import and a component union")
+        from chemlab.evidence.stock_sources import validate_imported_stock
+
+        validate_imported_stock(store, stock)
+    if stock.component_refs:
+        if tuple(sorted(set(stock.component_refs))) != stock.component_refs:
+            raise ValueError("Stock components must be unique and sorted")
+        expected: set[str] = set()
+        license_terms = []
+        for parent in stock.component_refs:
+            component = load_stock(store, parent, _ancestors | {ref})
+            expected.update(component.identities)
+            license_terms.append({"stock_ref": parent, "license": component.license})
+        if set(stock.identities) != expected:
+            raise ValueError("Stock identities differ from the exact component union")
+        if stock.license != (
+            "Component terms apply separately: " + canonical_bytes(license_terms).decode("ascii")
+        ):
+            raise ValueError("Stock union terms differ from component license records")
     return stock
 
 

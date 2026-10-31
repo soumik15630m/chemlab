@@ -28,6 +28,9 @@ services:
     volumes:
       - ./var/docker:/workspace/var
       - ./models:/workspace/models
+      - ./artifacts:/workspace/artifacts:ro
+      - ./var/reaction-data:/workspace/reaction-data
+      - reaction_indexes:/workspace/reaction-indexes
 
   chemlab:
     <<: *runtime
@@ -40,6 +43,8 @@ services:
     volumes:
       - ./var/docker:/workspace/var
       - ./models:/workspace/models:ro
+      - ./var/reaction-data:/workspace/reaction-data:ro
+      - reaction_indexes:/workspace/reaction-indexes:ro
     command: ["serve", "--host", "0.0.0.0", "--port", "8080"]
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/api/health', timeout=3)"]
@@ -47,3 +52,7 @@ services:
       timeout: 5s
       retries: 6
       start_period: 15s
+
+volumes:
+  reaction_indexes:
+    name: chemlab-reaction-indexes

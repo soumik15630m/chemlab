@@ -5,6 +5,26 @@ from chemlab.chemistry.identity import mapping_status, stereo_relation
 from chemlab.records import MoleculeError
 
 
+def test_known_stereo_cycle_is_preserved_as_observation_but_cannot_enter_engine(lab):
+    from chemlab.application import Application
+    from chemlab.chemistry import require_stable_molecule
+
+    original = "O[C@H]1C2OC3OC1[C@@H](O)[C@H](O3)[C@@H]2O"
+    first = "O[C@H]1C2OC3OC1[C@H](O)[C@H](O3)[C@H]2O"
+    assert require_molecule(original).canonical_smiles == first
+    assert require_molecule(first).canonical_smiles == original
+    for smiles in (original, first):
+        with pytest.raises(ValueError, match="not_idempotent"):
+            require_stable_molecule(smiles)
+    store, config, _, backward, _ = lab
+    with pytest.raises(ValueError, match="not_idempotent"):
+        Application(store).prepare(original, config)
+    with pytest.raises(ValueError, match="not_idempotent"):
+        backward.backward(original, 10)
+    assert Application(store).runs() == []
+    assert require_stable_molecule("C[C@H](O)F") == require_molecule("C[C@H](O)F")
+
+
 @pytest.mark.parametrize(
     "left,right,equal",
     [

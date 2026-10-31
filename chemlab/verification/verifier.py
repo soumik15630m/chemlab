@@ -6,7 +6,7 @@ from typing import Any
 from rdchiral.main import rdchiralRunText
 
 from chemlab.adapters.models import ModelService, score_cost
-from chemlab.chemistry import require_molecule
+from chemlab.chemistry import require_molecule, require_stable_molecule
 from chemlab.chemistry.identity import mapping_status
 from chemlab.evidence.checks import forward_check, load_stock, precedent_lookup
 from chemlab.records import (
@@ -100,7 +100,7 @@ def verify(
 
     try:
         route = Route.model_validate(serialized)
-        target = require_molecule(target).canonical_smiles
+        target = require_stable_molecule(target).canonical_smiles
         add("schema", "pass", "route_schema_valid")
     except Exception as exc:
         return VerificationReport(
@@ -129,7 +129,7 @@ def verify(
         if route.root_id not in nodes:
             raise ValueError("Missing root occurrence")
         for node in route.molecules:
-            reconstructed = require_molecule(node.molecule.original_smiles)
+            reconstructed = require_stable_molecule(node.molecule.original_smiles)
             if reconstructed != node.molecule:
                 raise ValueError(f"Serialized molecular identity/flags mismatch: {node.id}")
             identities[node.id] = reconstructed.canonical_smiles
@@ -199,7 +199,8 @@ def verify(
                 raise ValueError("Prediction product identity differs from exported product")
             exported = {identities[mid] for mid in step.precursor_ids}
             authoritative = {
-                require_molecule(m.original_smiles).canonical_smiles for m in candidate.precursors
+                require_stable_molecule(m.original_smiles).canonical_smiles
+                for m in candidate.precursors
             }
             if exported != authoritative:
                 raise ValueError("Export changed the authoritative precursor dependencies")

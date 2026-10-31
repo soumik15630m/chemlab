@@ -1,0 +1,12 @@
+{
+  "scope": "Initial complete-source ingestion attempt, rejected at stock admission",
+  "passed": false,
+  "source_sha256": "b895120f2b80a75e9208b969dd6d4d453196bda231649824f9a5d33bb53ad3e6",
+  "input_rows": 255958,
+  "initial_unique_identities": 255436,
+  "failure": "Stock contains a noncanonical identity",
+  "rdkit_version": "2026.9.1",
+  "live_registration_performed": false,
+  "state": "Isolated temporary container state discarded; source bytes retained for diagnosis",
+  "follow_up": "Check canonical identity idempotence and quarantine unstable rows with original source IDs"
+}

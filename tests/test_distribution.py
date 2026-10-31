@@ -42,6 +42,24 @@ def test_active_run_cannot_be_published_as_snapshot(lab, tmp_path):
     assert not destination.exists()
 
 
+def test_active_chemical_job_cannot_be_published_as_runtime_snapshot(lab, tmp_path):
+    from chemlab.evidence.chemical_service import ChemicalService, parse_reaction
+
+    store, *_ = lab
+    service = ChemicalService(store)
+    job_id = service.prepare([parse_reaction("CCO>>CC=O")], None)
+    destination = tmp_path / "active-chemistry.zip"
+    with pytest.raises(IntegrityError, match="active chemical"):
+        export_runtime(store.root, destination)
+    assert not destination.exists()
+    service.execute(job_id)
+    completed = tmp_path / "completed-chemistry.zip"
+    export_runtime(store.root, completed)
+    restored = tmp_path / "restored-chemistry"
+    restore_runtime(completed, restored)
+    assert ChemicalService(type(store)(restored)).job(job_id) == service.job(job_id)
+
+
 def test_corrupt_registered_object_blocks_export(lab, tmp_path):
     store, config, *_ = lab
     (store.objects / f"{config.stock_ref}.json").write_bytes(b"{}")
