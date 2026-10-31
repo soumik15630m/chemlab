@@ -498,6 +498,24 @@ an isolated temporary repository changes all three hashes, demonstrating detecti
 of the relevant transport defect. This is artifact/source integrity evidence,
 not a chemical research result.
 
+## R022 - Independent retrieval of published reaction artifacts
+
+The implementation/data commit is
+`47aad3bc8479cc4f5ee5f6d3dc4452cc95b28e97`. The standard Git LFS client
+acknowledged all 18 new objects, totalling approximately 865 MB. The first Git
+branch connection closed during the long upload; the already acknowledged LFS
+objects were reused when the branch push succeeded with the configured Windows
+OpenSSH client and keepalives. No history was rewritten.
+
+Both `evaluation/reports/reaction-lfs-distribution-2026-10-31.json` and
+`evaluation/reports/reaction-evidence-lfs-distribution-2026-10-31.json` record
+independent fresh HTTPS downloads from that exact GitHub commit. All 18 new LFS
+payloads matched their expected byte sizes and SHA-256 values: the complete
+knowledge archive, eight mapper mirror/provenance/license files and nine retained
+evaluation/parity objects. The original large generator/forward artifacts were
+preserved rather than downloaded again. This establishes published-byte
+availability and identity, not chemical correctness.
+
 ## Evidence and continuation
 
 The chemistry exports add representation and reporting checks, not new chemical

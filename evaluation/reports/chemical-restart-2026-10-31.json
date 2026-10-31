@@ -1,0 +1,1 @@
+{"passed": true, "health": {"status": "ok", "planner": "Syntheseus Retro*", "identity": "identity-v1"}, "saved_runs": 11, "complete_chemical_jobs": 4, "preferred_mapper_venv_preserved": true, "scope": "Health, persisted runs/jobs and corrected provider registration after restarting the interrupted local service"}

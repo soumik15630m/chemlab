@@ -39,6 +39,9 @@ these additions too. Setup verifies and restores the prepared indexes so normal
 startup does not rebuild the full patent corpus.
 `artifacts/reaction-downloads-v1.json` lists the additional archive/model files,
 sizes and hashes; the upstream mapper license accompanies its model mirror.
+Independent downloads of all 18 new LFS payloads were checked against their
+hashes; records are in `evaluation/reports/reaction-lfs-distribution-2026-10-31.json`
+and `evaluation/reports/reaction-evidence-lfs-distribution-2026-10-31.json`.
 
 After downloading, choose Docker or the native venv below. Both launchers reuse
 the materialized model/data files. Runtime history restoration is optional.

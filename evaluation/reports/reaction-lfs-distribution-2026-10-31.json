@@ -1,0 +1,54 @@
+{
+  "passed": true,
+  "source_commit": "47aad3bc8479cc4f5ee5f6d3dc4452cc95b28e97",
+  "download_manifest_sha256": "d2c2ed8de759a5f059d5143e0f10571138206b4d5ae903fcac68a8fb8cd97dd6",
+  "downloaded_files": [
+    {
+      "path": "artifacts/reaction-knowledge-v1.zip",
+      "bytes": 820425621,
+      "sha256": "ad253ee09783bf7767ceb4a827c27c30f1027425b8c1d0c71dbe72485a224e2c"
+    },
+    {
+      "path": "models/rxnmapper-albert-0.4.2-LICENSE",
+      "bytes": 1059,
+      "sha256": "707cf50feda0013d8669dda399d2c621414c3b3e29b07938af20b7572c93d499"
+    },
+    {
+      "path": "models/rxnmapper-albert-0.4.2-source.json",
+      "bytes": 747,
+      "sha256": "b44ea7b3f034ce9c4725e9d7ca84eb94750e65eba07e30aed77b0890fbe79145"
+    },
+    {
+      "path": "models/rxnmapper-albert-0.4.2/config.json",
+      "bytes": 1219,
+      "sha256": "ea0f3144af1d13a5d5928cff01abd8e7c14ab831ff7b6d73a14d4162864a876f"
+    },
+    {
+      "path": "models/rxnmapper-albert-0.4.2/pytorch_model.bin",
+      "bytes": 3212952,
+      "sha256": "8541f3f500dae71abe678d546bd035ca946e2d1c819f6b2cf41a97faedd7e6a2"
+    },
+    {
+      "path": "models/rxnmapper-albert-0.4.2/special_tokens_map.json",
+      "bytes": 112,
+      "sha256": "303df45a03609e4ead04bc3dc1536d0ab19b5358db685b6f3da123d05ec200e3"
+    },
+    {
+      "path": "models/rxnmapper-albert-0.4.2/tokenizer_config.json",
+      "bytes": 2,
+      "sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+    },
+    {
+      "path": "models/rxnmapper-albert-0.4.2/training_args.bin",
+      "bytes": 1562,
+      "sha256": "440fdf4459c2f51c3f042ccad777342b06bf3f491c251b712ab2aada5ff7a2eb"
+    },
+    {
+      "path": "models/rxnmapper-albert-0.4.2/vocab.txt",
+      "bytes": 3525,
+      "sha256": "399868a653e85549ce150af4a1f6cd2776240c6a3d951ced2120565f00f027fd"
+    }
+  ],
+  "total_downloaded_bytes": 823646799,
+  "scope": "Fresh HTTPS retrieval from the pinned GitHub commit; every new knowledge archive and mirrored mapper file independently downloaded and hashed. Original large generator/forward artifacts were preserved, not downloaded again."
+}

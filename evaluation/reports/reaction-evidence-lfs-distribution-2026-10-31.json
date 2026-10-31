@@ -1,0 +1,53 @@
+{
+  "passed": true,
+  "source_commit": "47aad3bc8479cc4f5ee5f6d3dc4452cc95b28e97",
+  "downloaded_files": [
+    {
+      "path": "evaluation/reports/chemical-reference-2026-10-31/evidence/objects/4f9f7d898e75af5462e872eb97222428b3cf2dcce3f3431768a76083e1bfcb00.json",
+      "bytes": 1131736,
+      "sha256": "4f9f7d898e75af5462e872eb97222428b3cf2dcce3f3431768a76083e1bfcb00"
+    },
+    {
+      "path": "evaluation/reports/chemical-reference-2026-10-31/evidence/objects/c511bfae604afbe4a141ca67116da0e8669bbbb8d0a2b5f0a5f1d120ec47f1eb.json",
+      "bytes": 39852770,
+      "sha256": "c511bfae604afbe4a141ca67116da0e8669bbbb8d0a2b5f0a5f1d120ec47f1eb"
+    },
+    {
+      "path": "evaluation/reports/chemical-reference-2026-10-31/evidence/objects/ca7c20940c75b337c9a5cca02f94c1861bf58ab7a1631afbb6f68e6603694881.json",
+      "bytes": 3840,
+      "sha256": "ca7c20940c75b337c9a5cca02f94c1861bf58ab7a1631afbb6f68e6603694881"
+    },
+    {
+      "path": "evaluation/reports/pretrained-admission-2026-10-31/evidence/objects/3a982b0b089229fd451ecc61ee39587850bfde137f8f05c15fd2d68c665356ef.json",
+      "bytes": 1166,
+      "sha256": "3a982b0b089229fd451ecc61ee39587850bfde137f8f05c15fd2d68c665356ef"
+    },
+    {
+      "path": "evaluation/reports/pretrained-admission-2026-10-31/evidence/objects/400ffeabc6d409372f318641c3c9528ec8d2ae4d84ad6e683a51d93465b33550.json",
+      "bytes": 6212,
+      "sha256": "400ffeabc6d409372f318641c3c9528ec8d2ae4d84ad6e683a51d93465b33550"
+    },
+    {
+      "path": "evaluation/reports/pretrained-admission-2026-10-31/evidence/objects/4afbeef456f26342052319345da2a092f7d35bfba95b9c096ebcace1d89b68b7.json",
+      "bytes": 3297,
+      "sha256": "4afbeef456f26342052319345da2a092f7d35bfba95b9c096ebcace1d89b68b7"
+    },
+    {
+      "path": "evaluation/reports/pretrained-admission-2026-10-31/evidence/objects/69e49e7e15439cb9523b7f23dc1b7f0b5ac1f89530eaa390a8417e77066178e4.json",
+      "bytes": 1160,
+      "sha256": "69e49e7e15439cb9523b7f23dc1b7f0b5ac1f89530eaa390a8417e77066178e4"
+    },
+    {
+      "path": "evaluation/reports/user-chemical-replay-2026-10-31/evidence/objects/7be5ef11dd945545c491dfb6ae645f04d59aab4f607f03fcd8f0f0191d05d2ac.json",
+      "bytes": 21958,
+      "sha256": "7be5ef11dd945545c491dfb6ae645f04d59aab4f607f03fcd8f0f0191d05d2ac"
+    },
+    {
+      "path": "evaluation/reports/user-chemical-replay-2026-10-31/evidence/objects/ddc0e298bfaf70c0794731a97e6f73ac944b7d2209b728c1fcaaba10739a6555.json",
+      "bytes": 318093,
+      "sha256": "ddc0e298bfaf70c0794731a97e6f73ac944b7d2209b728c1fcaaba10739a6555"
+    }
+  ],
+  "total_downloaded_bytes": 41340232,
+  "scope": "Fresh HTTPS retrieval of all nine new LFS evidence objects; content addresses, sizes and bytes independently match the retained evaluation, mapper and pretrained parity records"
+}
